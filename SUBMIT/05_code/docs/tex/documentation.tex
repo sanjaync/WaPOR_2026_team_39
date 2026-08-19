@@ -1,0 +1,390 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{caption}
+
+\definecolor{nile}{HTML}{0B3C5D}
+\definecolor{evap}{HTML}{D96F32}
+\definecolor{rule}{HTML}{BFCBD3}
+\titleformat{\section}{\normalfont\Large\bfseries\color{nile}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries\color{nile}}{\thesubsection}{0.6em}{}
+\captionsetup{font=small,labelfont={bf,color=nile}}
+\sisetup{group-separator={,},detect-weight=true}
+\setlist{itemsep=2pt,parsep=0pt,topsep=4pt}
+
+\newcommand{\keyfinding}[1]{%
+  \begin{center}\fcolorbox{rule}{black!3}{%
+  \begin{minipage}{0.94\linewidth}\vspace{4pt}#1\vspace{4pt}\end{minipage}}\end{center}}
+
+\title{\color{nile}\textbf{Same Budget, More Water}\\[2mm]
+\large\normalfont Turning the WaPOR evaporation--transpiration split into a
+ranked allocation of Egypt's on-farm modernisation budget}
+\author{WaPOR Hackathon 2026 --- technical documentation}
+\date{19 August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+FAO's WaPOR v3 database reports evaporation ($E$) and transpiration ($T$) as
+separate layers \citep{fao_wapor_v3}. Transpiration passed through a stoma and
+grew a crop; evaporation left the field having grown nothing. This work converts
+that distinction into an ordering over spending: for each administrative unit in
+Egypt's Nile Delta and Valley it estimates the volume of non-beneficial
+evaporation that is recoverable by low-cost on-farm measures, the annualised cost
+of recovering it, and hence a cost per cubic metre. Spending a fixed budget down
+that ordering recovers \SI{25}{\percent} more water than distributing the same
+budget in proportion to irrigated area. The work is designed to sit immediately
+downstream of IPAT, the irrigation assessment tool already operating on the
+Egyptian Ministry of Water Resources and Irrigation platform \citep{fao_ipat},
+which reports \emph{where} performance is poor but not \emph{where to spend}.
+Two findings contradicted the authors' prior hypothesis and are reported in full,
+together with a self-audit of how much of the result is attributable to the
+satellite rather than to coarse agronomic knowledge. A substantial methodological
+objection --- that WaPOR's $E$/$T$ separation may be insufficiently accurate for
+this use \citep{chukalla2022} --- is stated and addressed rather than omitted.
+\end{abstract}
+
+\section{The decision, and the gap in the toolchain}
+
+Egypt allocates a fixed share of the Nile among roughly 110 million people, with
+agriculture consuming over \SI{85}{\percent} of the national water allocation
+across approximately \SI{4}{\percent} of the land area \citep{ayyad2019}. The
+Ministry of Water Resources and Irrigation (MWRI) is responsible for that
+allocation and, under the National Water Resources Plan 2017--2037, for
+rationalising water use and rehabilitating conveyance infrastructure
+\citep{nwrp2037}. It spends an annual on-farm modernisation budget and is
+accountable for what that budget delivers.
+
+FAO's applications catalogue now lists more than twenty operational WaPOR tools
+\citep{fao_catalogue}. Egypt has its own: IPAT is a web tool hosted on the MWRI
+platform, built on WaPOR v3 Level 3 (\SI{20}{\metre}) data covering roughly
+1.5\,Mha of the Middle and West Delta across sprinkler, drip and
+flood systems, co-developed with IHE Delft \citep{fao_ipat}. It reports where
+water productivity is high and low.
+
+\keyfinding{The gap is not data, and it is not accuracy. A planning officer with
+a fixed budget must decide \emph{which} governorates receive it and in what
+proportion. No output in the existing chain is denominated in the units of that
+decision. The tool reports millimetres per dekad; the decision is made in
+currency, hectares and cubic metres.}
+
+\section{Method}
+
+\subsection{Seasonal aggregation}
+
+WaPOR v3 Level 2 dekadal rasters were summed over the 18 dekads spanning
+1 May to 31 October 2024, the summer (\emph{Nili}/\emph{Sefi}) season. Two
+corrections are required and neither is optional. WaPOR stores dekadal values as
+scaled integers with a scale property of \num{0.1}, and the scaled quantity is a
+rate in \si{\milli\metre\per\day}, not a total per dekad. Dekads are 10, 10, and
+8--11 days long, so
+\begin{equation}
+X_{\text{season}} \;=\; \sum_{d=1}^{18} \; \mathrm{DN}_d \times s \times n_d ,
+\qquad s = 0.1,\; n_d = \text{days in dekad } d .
+\end{equation}
+Because $s n_d \approx 1$, the raw integer coincidentally reads as millimetres
+per dekad, and a seasonal total computed with \emph{neither} correction is also
+superficially plausible. The raw value is therefore not a usable diagnostic; only
+the seasonal total distinguishes the two cases.
+
+\subsection{Separating cropland from desert, and from water}
+
+Outside the irrigated Nile system there is effectively no water and no rain, so
+seasonal evapotranspiration collapses towards zero. A seasonal threshold of
+$\text{AETI} > \SI{200}{\milli\metre}$ therefore separates irrigated land from
+desert using the same data already being analysed, with no additional product,
+licence or cost.
+
+Open water is a more serious problem, because it evaporates freely all season and
+would masquerade as extremely inefficient cropland. Three filters are applied in
+combination: JRC Global Surface Water occurrence above \SI{50}{\percent}
+\citep{pekel2016}; a beneficial-fraction floor of $T/\text{AETI} > 0.15$, below
+which a pixel cannot be a crop; and an absolute ceiling of
+$E < \SI{600}{\milli\metre}$ per season. Section~\ref{sec:contamination} explains
+why the third filter proved necessary.
+
+\subsection{From evaporation to an ordering over spending}
+
+For each administrative unit $i$ and applicable intervention $j$:
+\begin{align}
+V_{ij} &= E_i \cdot A_i \cdot 10 \cdot r_j \cdot m_j
+  && [\si{\cubic\metre}\,\text{yr}^{-1}] \\
+C_{ij} &= \frac{c_j}{L_j} \cdot A_i
+  && [\text{USD}\,\text{yr}^{-1}] \\
+\kappa_{ij} &= C_{ij} / V_{ij}
+  && [\text{USD}\,\text{m}^{-3}]
+\end{align}
+where $E_i$ is mean seasonal evaporation over masked cropland
+(\si{\milli\metre}), $A_i$ the observed irrigated area (\si{\hectare}), $r_j$ the
+evaporation-reduction fraction, $m_j$ the number of seasons per year over which
+the measure acts, $c_j$ the capital cost per hectare and $L_j$ the service life.
+Pairs are sorted by $\kappa$ ascending and funded until the budget is exhausted.
+Because a unit may be partially treated, the greedy solution is optimal.
+
+\subsection{Comparator}
+
+The baseline distributes the same budget in proportion to irrigated area, using
+the same one-measure-per-unit rule so that the constraint cancels. This is a
+\emph{neutral prior} --- what one would do knowing only where the cropland lies
+--- and explicitly not a claim about current MWRI practice, for which no citation
+is available. Against a literal equal split the reported advantage would be
+considerably larger; quoting that number would be comparing against a weaker
+counterfactual than honesty permits.
+
+\subsection{Intervention coefficients}
+
+\begin{table}[h]\centering\small
+\caption{Intervention model. These are literature-order estimates, not
+measurements, and every value is an editable input in the delivered tool.}
+\begin{tabular}{lS[table-format=4.0]S[table-format=2.0]S[table-format=1.2]S[table-format=1.0]l}
+\toprule
+Measure & {USD\,ha$^{-1}$} & {Life, yr} & {$r_j$} & {$m_j$} & Note \\
+\midrule
+Laser land levelling & 75 & 5 & 0.10 & 2 & Deployed at scale in Egypt \\
+Alternate wetting \& drying & 25 & 1 & 0.10 & 1 & Evaporation component only \\
+Straw / plastic mulching & 260 & 1 & 0.30 & 1 & Never selected \\
+Drip retrofit & 1800 & 10 & 0.45 & 2 & Never selected \\
+\bottomrule
+\end{tabular}
+\label{tab:interventions}
+\end{table}
+
+The coefficient for alternate wetting and drying warrants comment. The saving
+usually attributed to AWD in the literature is in water \emph{applied} ---
+percolation and seepage --- rather than in evapotranspiration
+\citep{bouman2001}. In a closed, high-reuse system such as the Nile Delta,
+percolation is largely recovered downstream and therefore is not a saving at
+basin scale \citep{perry2007,vanhalsema2012}. Only the evaporation component is
+counted here, which is why $r_j = 0.10$ rather than the 0.25--0.30 commonly
+quoted. Two of the four measures are never selected at any budget between
+\$6M and \$80M; they are retained for completeness, not because they do work.
+
+\section{Results}
+
+Observed irrigated area totalled 3.56\,Mha against
+3.21\,Mha of reported cultivated area --- an \SI{11}{\percent}
+overshoot, in the expected direction for a satellite that also observes
+orchards, canal banks and reclamation the statistics omit. As an internal check,
+$E + T + I$ summed to AETI exactly, confirming the scale and day-count
+corrections.
+
+\begin{table}[h]\centering\small
+\caption{Allocation of a \$12M budget. Water figures are annual.}
+\begin{tabular}{llS[table-format=1.2]S[table-format=3.1]S[table-format=1.3]}
+\toprule
+& Governorate & {Funded, \$M} & {Mm$^3$\,yr$^{-1}$} & {USD\,m$^{-3}$} \\
+\midrule
+1 & Aswan     & 1.19 & 29.5 & 0.040 \\
+2 & Qena      & 2.74 & 67.8 & 0.040 \\
+3 & Sohag     & 2.17 & 50.8 & 0.043 \\
+4 & Assiut    & 2.23 & 48.3 & 0.046 \\
+5 & Beni Suef & 1.97 & 41.7 & 0.047 \\
+6 & Qalyubia  & 1.12 & 22.9 & 0.049 \\
+7 & Minya     & 0.58 & 11.8 & 0.049 \\
+\midrule
+\multicolumn{2}{l}{\textbf{Targeted}}          & 12.00 & 273.0 & 0.044 \\
+\multicolumn{2}{l}{Area-proportional baseline} & 12.00 & 218.1 & 0.055 \\
+\bottomrule
+\end{tabular}
+\label{tab:allocation}
+\end{table}
+
+\keyfinding{Ordering the same budget by cost of recovered water yields
+\SI{25.2}{\percent} more water than distributing it by irrigated area, and the
+same figure on unit cost --- so the gain is not an artefact of spending more.}
+
+\subsection{Equity is priced rather than assumed away}
+
+Strictly cheapest-first funds seven governorates out of eighteen. No ministry
+operating under an equity mandate would sign that, so a recommendation which
+ignores the constraint is a recommendation which is ignored. Instead, a fraction
+of the budget is reserved and distributed across every unit by irrigated area
+before the remainder is targeted, and the cost of that choice is quantified
+(Table~\ref{tab:equity}).
+
+\begin{table}[h]\centering\small
+\caption{The cost of an equity floor. A floor of 1.0 reproduces the baseline
+exactly, which serves as an internal consistency check.}
+\begin{tabular}{S[table-format=3.0]S[table-format=2.0]S[table-format=3.1]l}
+\toprule
+{Floor, \%} & {Units funded} & {Mm$^3$} & Cost vs.\ pure targeting \\
+\midrule
+0   & 7  & 273.0 & --- \\
+25  & 18 & 264.2 & $-3.2\%$ \\
+50  & 18 & 253.3 & $-7.2\%$ \\
+75  & 18 & 237.9 & $-12.9\%$ \\
+100 & 18 & 218.1 & $-20.1\%$ \\
+\bottomrule
+\end{tabular}
+\label{tab:equity}
+\end{table}
+
+Reserving a quarter of the budget funds every governorate at a cost of
+\SI{3.2}{\percent} of the water. This is offered as the practical
+recommendation: it does not depoliticise the allocation, it prices the political
+constraint and returns the dial to the committee.
+
+\section{Two findings that contradicted our hypothesis}
+
+\subsection{The rice belt is the most efficient land in Egypt, not the least}
+
+The work was built expecting the northern Delta rice belt to lead, reasoning that
+ponded paddy evaporates throughout the season. The measurement says the opposite.
+Damietta returns an evaporated share of \num{0.157} and Kafr El Sheikh
+\num{0.191}, against \num{0.23}--\num{0.29} elsewhere. A closed rice canopy
+shades the water surface, so ponding does not imply evaporation.
+
+\subsection{The ranking follows throughput, not practice}
+
+\begin{table}[h]\centering\small
+\caption{Area-weighted evaporated share by irrigation system.}
+\begin{tabular}{lS[table-format=1.2]S[table-format=3.0]S[table-format=1.3]}
+\toprule
+System & {Irrigated, Mha} & {AETI, \si{\milli\metre}} & {$E/\text{AETI}$} \\
+\midrule
+Delta --- rice belt        & 1.76 & 592 & 0.210 \\
+Nile Valley (Upper Egypt)  & 1.19 & 684 & 0.241 \\
+Delta --- other            & 0.61 & 500 & 0.243 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The wasted \emph{fraction} is close to uniform nationally. What differs is
+throughput: Upper Egypt passes 660--\SI{775}{\milli\metre} through a field
+against the Delta's 510--\SI{640}{\milli\metre}, so an equivalent inefficiency
+costs more water. Targeting therefore follows evaporative demand rather than poor
+practice --- a materially different policy message from the one we set out to
+deliver.
+
+\section{Self-audit: how much of this requires the satellite?}
+
+The allocation was re-run with the satellite information progressively removed.
+
+\begin{table}[h]\centering\small
+\begin{tabular}{lS[table-format=2.1]}
+\toprule
+Information available & {Gain vs.\ baseline, \%} \\
+\midrule
+Real per-district evaporation (WaPOR)      & 25.2 \\
+Per-system average only (agronomic map)    & 21.5 \\
+Spatially uniform evaporation              & 0.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+With no spatial information, targeting gains nothing: the entire advantage is
+spatial. But most of it resides in the system-level pattern, so the increment
+attributable to district-level satellite \emph{detail} is approximately
+\num{3.7} percentage points. This is a weaker claim than anticipated and is
+reported because a reviewer would otherwise derive it. The counter-argument is
+that the system-level pattern is precisely what the satellite corrected: without
+it the budget would have been directed into the Delta on the strength of a
+textbook intuition about ponded rice.
+
+\section{Contamination we introduced and then removed}
+\label{sec:contamination}
+
+Aswan initially ranked first nationally. Inspection of the underlying pixel
+distribution showed seasonal $E$ reaching \SI{1834}{\milli\metre}, with 5\,392
+pixels above \SI{600}{\milli\metre} --- rates attainable by open water, not by
+cropland. Lake Nasser, the Toshka lakes, the Nile channel, main canals and Delta
+aquaculture had survived both the JRC mask, whose occurrence baseline misses
+fluctuating margins and recent water bodies, and the beneficial-fraction floor,
+which a partially vegetated shoreline pixel can clear.
+
+The effect was not marginal: Aswan's mean $E$ was \SI{274}{\milli\metre} against a
+median of \SI{192}{\milli\metre}. The mean was being set by contamination, and it
+alone had placed Aswan at the head of the national ranking. Introducing the
+physical ceiling $E < \SI{600}{\milli\metre}$ --- for every unit the 99th
+percentile of cropland $E$ lies below \SI{400}{\milli\metre} while open water
+exceeds \SI{1200}{\milli\metre}, so nothing real occupies the interval --- reduced
+Aswan's mean to \SI{186}{\milli\metre} and largely removed its lead. The national
+advantage fell from \SI{32.2}{\percent} to \SI{25.2}{\percent}, and the
+system-level contrast that had appeared to separate Upper Egypt from the Delta
+largely dissolved.
+
+\keyfinding{This correction is reported because the uncorrected result would have
+been more favourable to the hypothesis being tested. A method whose most
+attractive output is produced by contamination is a method that has not yet been
+checked.}
+
+\section{Limitations}
+
+\subsection{The principal methodological objection}
+
+\citet{chukalla2022}, in the reference framework for WaPOR-based irrigation
+performance assessment, \emph{excluded the beneficial fraction} on the grounds
+that WaPOR's separation of evaporation from transpiration is insufficiently
+accurate. That is a direct challenge to the present work, which rests entirely on
+that separation, and it is not dismissed here.
+
+Three considerations bear on it. First, the $E$/$T$ split is used
+\emph{relatively}, to order units, rather than absolutely; a systematic bias in
+the retrieval partly cancels under comparison between units processed by the same
+algorithm. Second, the self-audit above shows the ordering is driven
+substantially by AETI --- the best-constrained WaPOR variable --- through the
+throughput effect, rather than by the fraction alone. Third, and decisively, the
+appropriate status of this output is a \emph{prioritisation hypothesis to be
+confirmed by field measurement}, not a settled allocation. The correct response
+to \citet{chukalla2022} is to direct field validation at the units this method
+ranks highest, which is itself a use of the ranking.
+
+\subsection{Other limitations}
+
+\begin{itemize}
+\item \textbf{Field scale is not basin scale.} A share of the water an
+  intervention frees was already returning to drains and aquifers and being
+  reused downstream \citep{perry2007,vanhalsema2012}. Suppressing soil
+  evaporation may also convert it to transpiration and yield rather than to
+  recoverable water. Recoverable evaporation is an upper bound; these figures
+  rank locations and do not constitute a water account.
+\item \textbf{Magnitude is soft, ordering is comparatively robust.} The ordering
+  follows observed evaporation; the size of the prize moves with every
+  coefficient in Table~\ref{tab:interventions}.
+\item \textbf{The decision unit is administrative.} Governorates are not the
+  delivery unit; irrigation directorates and command areas are. The method is
+  boundary-agnostic and runs unchanged on any polygon set, including those used
+  by IPAT.
+\item \textbf{Units below 5\,000\,ha are excluded} and reported, not
+  silently dropped. GAUL's Luxor polygon covers 12\,km$^2$,
+  which is the city rather than the governorate \citep{gaul2015}.
+\item \textbf{The confidence indicator is presently unsound.} It is computed over
+  the already-masked subset, so a predominantly desert unit can attain a narrow
+  distribution and therefore a high score. It is reported in the tool and should
+  not be relied upon.
+\end{itemize}
+
+\section{Implementation}
+
+The analysis runs either as a local Python pipeline over exported GeoTIFFs or
+entirely within Google Earth Engine \citep{gorelick2017}, in which case
+per-unit statistics are precomputed to an Earth Engine asset and the allocation
+is evaluated client-side. The delivered artefact is a single self-contained HTML
+file requiring no network, which matters because the intended user opens it
+inside a ministry rather than on a research network. All intervention
+coefficients are editable at runtime, so the committee argues with the model
+rather than being handed its conclusion.
+
+Monitoring closes the loop. Because the indicator that justifies the spending is
+the indicator that measures it, the following season observes funded and unfunded
+units under the same instrument at the same cost, permitting a
+difference-in-differences estimate with a stated confidence interval --- including
+the case in which the effect is too small to detect.
+
+\bibliographystyle{unsrtnat}
+\bibliography{refs}
+
+\end{document}

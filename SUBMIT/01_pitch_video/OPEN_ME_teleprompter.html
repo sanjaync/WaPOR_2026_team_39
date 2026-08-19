@@ -1,0 +1,133 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pitch teleprompter — Same Budget, More Water</title>
+<style>
+:root{--bg:#0b0f13;--fg:#f2f6f8;--dim:#5f7482;--hot:#e8823c;--ok:#4bb07a;--line:#1c262e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     min-height:100vh;display:flex;flex-direction:column}
+header{padding:14px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+h1{font-size:15px;font-weight:700;letter-spacing:.02em}
+.meta{font-size:12px;color:var(--dim)}
+.btn{background:#16202a;color:var(--fg);border:1px solid #26333d;border-radius:7px;
+     padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer}
+.btn:hover{background:#1d2a35}
+.btn.go{background:var(--hot);border-color:var(--hot);color:#150a03}
+.clock{font-variant-numeric:tabular-nums;font-size:26px;font-weight:700;margin-left:auto}
+.clock.over{color:var(--hot)}
+#bar{height:4px;background:#16202a}
+#fill{height:100%;width:0;background:var(--hot);transition:width .25s linear}
+main{flex:1;display:grid;grid-template-columns:1fr 330px;gap:0;overflow:hidden}
+#script{overflow-y:auto;padding:5vh 6vw 40vh}
+.seg{margin:0 0 3.2vh;opacity:.22;transition:opacity .3s}
+.seg.on{opacity:1}
+.seg.done{opacity:.32}
+.tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--hot);
+     margin-bottom:6px;display:flex;gap:10px;align-items:baseline}
+.tag .t{color:var(--dim);letter-spacing:.04em}
+.seg p{font-size:clamp(21px,2.9vw,36px);line-height:1.34;font-weight:600;letter-spacing:-.01em}
+.seg.on p{color:#fff}
+aside{border-left:1px solid var(--line);padding:22px 20px;overflow-y:auto;background:#080c10}
+aside h2{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.cue{border-left:2px solid #26333d;padding:0 0 14px 12px;margin-bottom:14px}
+.cue.on{border-color:var(--hot)}
+.cue b{display:block;font-size:13px;margin-bottom:3px}
+.cue span{font-size:12px;color:var(--dim);line-height:1.45}
+.hint{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--dim);line-height:1.6}
+kbd{background:#16202a;border:1px solid #26333d;border-radius:4px;padding:1px 5px;font-size:11px}
+@media(max-width:900px){main{grid-template-columns:1fr}aside{display:none}}
+</style></head><body>
+
+<header>
+  <h1>Same Budget, More Water — 60-second pitch</h1>
+  <span class="meta">144 words · target 0:58</span>
+  <button class="btn go" id="go">Start (space)</button>
+  <button class="btn" id="rst">Reset</button>
+  <button class="btn" id="big">A+</button>
+  <span class="clock" id="clock">0:00</span>
+</header>
+<div id="bar"><div id="fill"></div></div>
+
+<main>
+  <div id="script"></div>
+  <aside>
+    <h2>On screen</h2>
+    <div id="cues"></div>
+    <div class="hint">
+      <kbd>space</kbd> start / pause · <kbd>R</kbd> reset · <kbd>←</kbd> <kbd>→</kbd> step<br><br>
+      Record the screen and your voice separately if you can — it is far easier to
+      re-do one narration take than to re-do the whole capture.<br><br>
+      Do not chase the timer. If you land at 0:62 the pitch is fine; if you rush
+      the mandate to save four seconds you lose 20% of the score.
+    </div>
+  </aside>
+</main>
+
+<script>
+const SEGS=[
+ {tag:'Hook — the contradiction', t:'0:00', dur:9,
+  text:"We thought Egypt's rice paddies wasted the most water. They waste the least. And that one measurement changes where a national budget should go.",
+  cue:'App on the map, beneficial-fraction layer. Northern Delta reading as the efficient end.'},
+ {tag:'The mandate', t:'0:09', dur:13,
+  text:"Egypt's Ministry of Water Resources and Irrigation makes a fixed share of the Nile feed a hundred and ten million people. Every year it spends a budget modernising farms — and has to justify it.",
+  cue:'Deck slide 4, left column. Hold on the mandate card.'},
+ {tag:'The challenge', t:'0:22', dur:7,
+  text:"But nothing tells it where. So the money spreads by cultivated area, or by political balance.",
+  cue:'Slide 4, middle column — the orange challenge card.'},
+ {tag:'The alignment', t:'0:29', dur:10,
+  text:"The ministry already runs a WaPOR tool that shows where water productivity is low. It does not say where to spend. We add that step.",
+  cue:'Slide 4, right column. IPAT named on screen.'},
+ {tag:'The decision', t:'0:39', dur:14,
+  text:"WaPOR separates water that grew a crop from water that simply evaporated. We rank every governorate by how much of that is recoverable and what it costs — an ordered spending list. Same budget, a quarter more water.",
+  cue:'LIVE APP. Blue/orange split bar, then drag the budget slider slowly and let the ranked list re-order. Do not talk over the re-order.'},
+ {tag:'The close', t:'0:53', dur:5,
+  text:"And next season, the same satellite shows whether the money worked.",
+  cue:'Monitor flow, hold on step 4. Cut on the word "worked".'}
+];
+const TOTAL=SEGS.reduce((s,x)=>s+x.dur,0);
+const scriptEl=document.getElementById('script'), cuesEl=document.getElementById('cues');
+SEGS.forEach((s,i)=>{
+  scriptEl.insertAdjacentHTML('beforeend',
+    `<div class="seg" id="s${i}"><div class="tag">${s.tag}<span class="t">${s.t} · ${s.dur}s</span></div><p>${s.text}</p></div>`);
+  cuesEl.insertAdjacentHTML('beforeend',
+    `<div class="cue" id="c${i}"><b>${s.tag}</b><span>${s.cue}</span></div>`);
+});
+let t=0, running=false, idx=-1, timer=null, scale=1;
+const clock=document.getElementById('clock'), fill=document.getElementById('fill');
+const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+function activeIndex(sec){let a=0;for(let i=0;i<SEGS.length;i++){a+=SEGS[i].dur;if(sec<a)return i}return SEGS.length-1}
+function paint(){
+  clock.textContent=fmt(t);
+  clock.classList.toggle('over', t>TOTAL+3);
+  fill.style.width=Math.min(100,t/TOTAL*100)+'%';
+  const n=activeIndex(t);
+  if(n!==idx){
+    idx=n;
+    SEGS.forEach((_,i)=>{
+      const s=document.getElementById('s'+i), c=document.getElementById('c'+i);
+      s.className='seg'+(i===n?' on':i<n?' done':'');
+      c.className='cue'+(i===n?' on':'');
+    });
+    document.getElementById('s'+n).scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+function tick(){ t+=0.1; paint(); }
+function toggle(){
+  running=!running;
+  document.getElementById('go').textContent = running?'Pause (space)':'Start (space)';
+  if(running) timer=setInterval(tick,100); else clearInterval(timer);
+}
+function reset(){ clearInterval(timer); running=false; t=0; idx=-1;
+  document.getElementById('go').textContent='Start (space)'; paint(); }
+document.getElementById('go').onclick=toggle;
+document.getElementById('rst').onclick=reset;
+document.getElementById('big').onclick=()=>{ scale=scale>=1.5?0.85:scale+0.15;
+  scriptEl.style.fontSize=(scale*100)+'%'; };
+addEventListener('keydown',e=>{
+  if(e.code==='Space'){e.preventDefault();toggle()}
+  if(e.key==='r'||e.key==='R') reset();
+  if(e.key==='ArrowRight'){let a=0;for(let i=0;i<=activeIndex(t);i++)a+=SEGS[i].dur;t=a+0.1;paint()}
+  if(e.key==='ArrowLeft'){let n=activeIndex(t),a=0;for(let i=0;i<n;i++)a+=SEGS[i].dur;t=Math.max(0,a-SEGS[Math.max(0,n-1)].dur+0.1);paint()}
+});
+paint();
+</script></body></html>

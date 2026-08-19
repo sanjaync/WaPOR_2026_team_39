@@ -1,0 +1,8 @@
+{
+  "data_status": "DEMO",
+  "warning": "Synthetic placeholder values. Not WaPOR measurements. Run pipeline/02_fetch_wapor.py then 03_zonal_stats.py.",
+  "season_label": "Summer (Nili/Sefi) 2024",
+  "season_start": "2024-05-01",
+  "season_end": "2024-10-31",
+  "generated_by": "pipeline/make_demo_data.py"
+}
