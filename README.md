@@ -3,9 +3,13 @@
 **Ranking Egypt's on-farm modernisation budget by the water that evaporated
 without growing a crop.**
 
-WaPOR Hackathon 2026 · Team 39 · Sanjay N C
+WaPOR Hackathon 2026 · Team 39
 
-![The tool](images/readme_app.png)
+---
+
+## 🌾 The Vision
+
+![Optimizing Egypt's Irrigation Modernization](Optimizing_Egypt_s_Irrigation_Modernization.png)
 
 ---
 
@@ -33,6 +37,13 @@ No country with more than five million people has less freshwater of its own, an
 agriculture takes 79% of what there is.
 
 ![Water scarcity, 2024](images/readme_scarcity.png)
+
+---
+
+## 📚 Learn More
+
+- **[The Big Picture](THE_BIG_PICTURE.md)** — Understanding Egypt's water crisis and how this solution helps
+- **[The Methodology](METHODOLOGY.md)** — How WaPOR satellites, math, and the greedy algorithm work together
 
 ---
 
