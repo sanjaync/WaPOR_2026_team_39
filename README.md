@@ -40,10 +40,13 @@ agriculture takes 79% of what there is.
 
 ---
 
-## 📚 Learn More
+## 📚 Documentation & Learn More
 
 - **[The Big Picture](THE_BIG_PICTURE.md)** — Understanding Egypt's water crisis and how this solution helps
 - **[The Methodology](METHODOLOGY.md)** — How WaPOR satellites, math, and the greedy algorithm work together
+- **[From Tools to Decisions](FROM_TOOLS_TO_DECISIONS.md)** — Why this decision-based approach transforms water budgeting
+
+**View the complete project:** [github.com/sanjaync/WaPOR_2026_team_39](https://github.com/sanjaync/WaPOR_2026_team_39)
 
 ---
 
