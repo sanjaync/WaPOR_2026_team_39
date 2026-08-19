@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Same Budget, More Water, Nile Delta evaporation targeting</title>
+<style>
+:root{
+  color-scheme: light;
+  --surface-0:#f4f3f0; --surface-1:#fcfcfb; --surface-2:#eeede9;
+  --border:#dcdad4; --border-strong:#c3c1b8;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78766f;
+  --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a;
+  --seq-100:#cde2fb; --seq-200:#9ec5f4; --seq-300:#6da7ec; --seq-400:#3987e5;
+  --seq-500:#256abf; --seq-600:#184f95; --seq-700:#0d366b;
+  --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b;
+  --muted-mark:#b9b7b0;
+  --shadow:0 1px 2px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.05);
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --surface-0:#111110; --surface-1:#1a1a19; --surface-2:#232322;
+  --border:#33322f; --border-strong:#4a4945;
+  --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94928a;
+  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70;
+  --seq-100:#0d366b; --seq-200:#184f95; --seq-300:#256abf; --seq-400:#2a78d6;
+  --seq-500:#3987e5; --seq-600:#6da7ec; --seq-700:#9ec5f4;
+  --muted-mark:#4a4945;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--surface-0); color:var(--text-primary);
+  font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1440px;margin:0 auto;padding:0 20px 64px}
+
+/* ---------- demo banner ---------- */
+#demoBanner{
+  background:var(--critical); color:#fff; padding:10px 20px; font-size:13.5px;
+  font-weight:600; letter-spacing:.01em; text-align:center; line-height:1.45;
+}
+#demoBanner b{text-decoration:underline}
+#demoBanner.hidden{display:none}
+
+/* ---------- header ---------- */
+header{padding:26px 0 20px;display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap}
+header .id{flex:1 1 420px;min-width:280px}
+.tagline{font-size:15px;color:var(--text-secondary);margin:4px 0 10px;max-width:70ch}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted)}
+h1{margin:6px 0 4px;font-size:29px;line-height:1.15;letter-spacing:-.02em;font-weight:700}
+.sub{color:var(--text-secondary);font-size:14.5px;max-width:70ch}
+.hdr-actions{display:flex;gap:8px;align-items:center;padding-top:22px}
+button,select,input[type=text]{font:inherit;color:inherit}
+.btn{
+  background:var(--surface-1);border:1px solid var(--border-strong);border-radius:8px;
+  padding:7px 13px;font-size:13.5px;cursor:pointer;transition:background .12s,border-color .12s;
+}
+.btn:hover{background:var(--surface-2);border-color:var(--text-muted)}
+.btn.primary{background:var(--series-1);border-color:var(--series-1);color:#fff;font-weight:600}
+.btn.primary:hover{filter:brightness(1.08)}
+
+/* ---------- kpi row ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:20px}
+.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:15px 17px;box-shadow:var(--shadow)}
+.tile .k{font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px}
+.tile .v{font-size:27px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.tile .u{font-size:13px;color:var(--text-secondary);margin-top:3px}
+.tile.hero{background:linear-gradient(140deg,var(--series-1),var(--seq-600));border-color:transparent;color:#fff}
+.tile.hero .k,.tile.hero .u{color:rgba(255,255,255,.86)}
+.tile.hero .v{font-size:44px}
+
+/* ---------- layout ---------- */
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
+@media(max-width:1080px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:var(--shadow);min-width:0}
+.card h2{margin:0 0 3px;font-size:16.5px;font-weight:700;letter-spacing:-.01em}
+.card .note{color:var(--text-secondary);font-size:13px;margin:0 0 15px;max-width:62ch}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.seg{display:inline-flex;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden}
+.seg button{background:var(--surface-1);border:0;padding:6px 12px;font-size:13px;cursor:pointer;border-right:1px solid var(--border)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed=true]{background:var(--series-1);color:#fff;font-weight:600}
+
+/* ---------- map ---------- */
+#mapWrap{position:relative}
+svg.map{width:100%;height:auto;display:block;background:var(--surface-2);border-radius:9px}
+svg.map path{stroke:var(--surface-1);stroke-width:.9;cursor:pointer;transition:opacity .12s}
+svg.map path:hover{stroke:var(--text-primary);stroke-width:1.6}
+svg.map path.dim{opacity:.35}
+.prov{display:block;font-size:10.5px;color:var(--text-muted);margin:0 0 6px;letter-spacing:.01em}
+.map .leader{stroke:var(--text-muted);stroke-width:.6;opacity:.55}
+.map .leaderdot{fill:var(--text-muted);opacity:.75}
+.map text{font-size:8.2px;fill:var(--text-primary);pointer-events:none;paint-order:stroke;
+  stroke:var(--surface-1);stroke-width:2.4px;stroke-linejoin:round;font-weight:600}
+.legend{display:flex;align-items:center;gap:9px;margin-top:12px;flex-wrap:wrap;font-size:12px;color:var(--text-secondary)}
+.ramp{display:flex;height:11px;border-radius:3px;overflow:hidden;width:180px}
+.ramp i{flex:1}
+
+/* ---------- ranked list ---------- */
+.rank{list-style:none;margin:0;padding:0}
+.rank li{padding:8px 0;border-bottom:1px solid var(--border)}
+.rank li:last-child{border-bottom:0}
+.rline{display:flex;align-items:baseline;gap:9px;font-size:13.5px;margin-bottom:5px}
+.rnum{font-variant-numeric:tabular-nums;color:var(--text-muted);font-size:12px;min-width:20px;font-weight:700}
+.rgov{font-weight:600;min-width:104px}
+.riv{color:var(--text-secondary);font-size:12.5px;flex:1}
+.rval{font-variant-numeric:tabular-nums;font-weight:700;font-size:13px}
+.bar{height:9px;border-radius:0 4px 4px 0;background:var(--muted-mark);position:relative}
+.bar.funded{background:var(--series-1)}
+.rmeta{font-size:11.5px;color:var(--text-muted);margin-top:4px;font-variant-numeric:tabular-nums}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;
+  padding:1px 6px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em}
+.chip.high{background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good)}
+.chip.medium{background:color-mix(in srgb,var(--warning) 22%,transparent);color:#8a6000}
+:root[data-theme=dark] .chip.medium{color:var(--warning)}
+.chip.low{background:color-mix(in srgb,var(--critical) 16%,transparent);color:var(--critical)}
+.chip.unfunded{background:var(--surface-2);color:var(--text-muted)}
+
+/* ---------- slider ---------- */
+.slider-row{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+input[type=range]{flex:1;accent-color:var(--series-1);height:22px}
+.bigval{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;min-width:118px;text-align:right}
+
+/* ---------- comparison ---------- */
+.cmp{display:flex;flex-direction:column;gap:11px;margin:14px 0 4px}
+.cmprow{display:grid;grid-template-columns:118px 1fr 92px;align-items:center;gap:11px;font-size:13px}
+.cmprow .lbl{color:var(--text-secondary)}
+.cmpbar{height:22px;border-radius:0 5px 5px 0;background:var(--muted-mark);display:flex;align-items:center}
+.cmpbar.on{background:var(--series-1)}
+.cmprow .num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+
+/* ---------- stacked ---------- */
+.stack{display:flex;flex-direction:column;gap:6px}
+.strow{display:grid;grid-template-columns:104px 1fr 62px;gap:10px;align-items:center;font-size:12.5px}
+.stbar{display:flex;height:17px;border-radius:4px;overflow:hidden;gap:2px}
+.stbar span{display:block}
+.stlegend{display:flex;gap:16px;font-size:12.5px;margin:12px 0 14px;flex-wrap:wrap;color:var(--text-secondary)}
+.stlegend b{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+
+/* ---------- assumptions ---------- */
+.asm{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:13px}
+.asmcard{border:1px solid var(--border);border-radius:10px;padding:12px 13px;background:var(--surface-0)}
+.asmcard h3{margin:0 0 3px;font-size:13.5px;font-weight:700}
+.asmcard p{margin:0 0 9px;font-size:11.8px;color:var(--text-muted);line-height:1.45}
+.field{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12.5px}
+.field label{flex:1;color:var(--text-secondary)}
+.field input[type=number]{width:78px;padding:3px 6px;border:1px solid var(--border-strong);
+  border-radius:6px;background:var(--surface-1);font-variant-numeric:tabular-nums;text-align:right}
+
+/* ---------- table ---------- */
+table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:6px 8px;border-bottom:1px solid var(--border)}
+th:first-child,td:first-child{text-align:left}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);font-weight:700}
+.hidden{display:none}
+
+/* ---------- tooltip ---------- */
+#tip{position:fixed;pointer-events:none;z-index:99;background:var(--surface-1);
+  border:1px solid var(--border-strong);border-radius:9px;padding:9px 11px;font-size:12.5px;
+  box-shadow:var(--shadow);max-width:270px;opacity:0;transition:opacity .1s}
+#tip.on{opacity:1}
+#tip .tt{font-weight:700;margin-bottom:4px;font-size:13px}
+#tip .tr{display:flex;justify-content:space-between;gap:16px;color:var(--text-secondary)}
+#tip .tr b{color:var(--text-primary);font-variant-numeric:tabular-nums}
+
+footer{margin-top:26px;padding-top:18px;border-top:1px solid var(--border);
+  font-size:12.5px;color:var(--text-muted);line-height:1.6}
+footer a{color:var(--series-1)}
+footer h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);margin:0 0 6px}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px}
+
+/* ---------- printable 2-page ministry brief ----------
+   No PDF library. The browser's own print pipeline produces the file, so the
+   page stays a single self-contained HTML with no dependency and no network. */
+#briefDoc{display:none}
+@media print{
+  @page{size:A4;margin:18mm 16mm}
+  body{background:#fff!important}
+  body>*{display:none!important}
+  #briefDoc{display:block!important;color:#000;font:11pt/1.45 Georgia,'Times New Roman',serif}
+  #briefDoc h1{font:700 20pt/1.2 Georgia,serif;margin:0 0 2mm}
+  #briefDoc .lede{font-size:10pt;color:#444;margin:0 0 6mm;font-style:italic}
+  #briefDoc h2{font:700 12pt/1.3 Georgia,serif;margin:6mm 0 2mm;border-bottom:1px solid #999;padding-bottom:1mm}
+  #briefDoc table{width:100%;border-collapse:collapse;font-size:9.5pt;margin:2mm 0}
+  #briefDoc th{text-align:left;border-bottom:1.2px solid #000;padding:1.4mm 2mm;font-weight:700}
+  #briefDoc td{border-bottom:.4px solid #bbb;padding:1.4mm 2mm;text-align:left}
+  #briefDoc td.n,#briefDoc th.n{text-align:right;font-variant-numeric:tabular-nums}
+  #briefDoc .callout{border:1px solid #000;padding:3mm 4mm;margin:3mm 0;font-size:10pt}
+  #briefDoc .fine{font-size:8.5pt;color:#333;line-height:1.4}
+  #briefDoc .pagebreak{page-break-before:always}
+  #briefDoc footer{margin-top:6mm;border-top:.5px solid #999;padding-top:2mm;
+    font-size:8pt;color:#555}
+}
+</style>
+</head>
+<body>
+
+<div id="demoBanner">
+  ⚠ <b>DEMO DATA, these are not WaPOR measurements.</b>
+  Evapotranspiration values are synthetic placeholders generated by
+  <code>pipeline/make_demo_data.py</code> so the decision logic can be demonstrated.
+  Run <code>02_fetch_wapor.py</code> → <code>03_zonal_stats.py</code> to replace them
+  with real WaPOR v3 data. Do not present these figures as findings.
+</div>
+
+<div class="wrap">
+<header>
+  <div class="id">
+    <div class="eyebrow">WaPOR Hackathon 2026 · From tools to decisions</div>
+    <h1>Same Budget, More Water</h1>
+    <p class="tagline">Ranking Egypt's irrigation budget by <strong>the water that evaporated without growing a crop</strong>.</p>
+    <p class="sub"><strong>IPAT</strong>, the irrigation assessment tool already running at Egypt's
+    Ministry of Water Resources and Irrigation, shows where water productivity is high and low across
+    1.5 million ha of the Middle and West Delta. It stops there. A ministry with a fixed budget still has
+    to decide <em>where to spend</em>.<br><br>
+    This is the layer that answers that. WaPOR v3 separates <strong>transpiration</strong>, water that
+    grew a crop, from <strong>evaporation</strong>, water that left the field having grown nothing.
+    We turn that split into a ranked spending list: which areas get the on-farm modernisation budget,
+    in what order, and how much water each dollar buys back.</p>
+  </div>
+  <div class="hdr-actions">
+    <button class="btn" id="themeBtn">◐ Theme</button>
+    <button class="btn primary" id="briefBtn">⤓ Download 2-page brief</button>
+  </div>
+</header>
+
+<div id="briefDoc"></div>
+<div class="kpis" id="kpis"></div>
+
+<div class="grid">
+  <section class="card">
+    <h2>Non-beneficial evaporation, by governorate</h2>
+    <p class="prov">FAO WaPOR v3 &middot; Level 2, 100&nbsp;m &middot; 18 dekads summed,
+      1 May &ndash; 31 Oct 2024 (summer / Nili&ndash;Sefi) &middot; retrieved 19 Aug 2026</p>
+    <p class="note">Darker = more of this governorate's water evaporated instead of growing
+      a crop. <strong>We expected the northern Delta rice belt to lead. It does not.</strong>
+      A closed rice canopy shades the ponded water, so Damietta and Kafr El Sheikh turn out
+      to hold the most efficient irrigated land we measured in Egypt. The wasted
+      <em>fraction</em> is close to uniform nationally. What differs is throughput:
+      Upper Egypt pushes more water through a field, so the same inefficiency costs more.</p>
+    <div class="controls">
+      <div class="seg" id="metricSeg">
+        <button data-m="e_mm" aria-pressed="true">Evaporation (mm)</button>
+        <button data-m="nb_mcm" aria-pressed="false">Volume (Mm³)</button>
+        <button data-m="bf" aria-pressed="false">Beneficial fraction</button>
+        <button data-m="cost" aria-pressed="false">Cost of saved water</button>
+      </div>
+    </div>
+    <div id="mapWrap"></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <section class="card">
+    <h2>The decision: this season's spending list</h2>
+    <p class="note">Move the budget. The list re-ranks by cost of water saved, cheapest
+      water first, and funds down the list until the money runs out.</p>
+    <div class="slider-row">
+      <input type="range" id="budget" min="1" max="80" step="1" value="12">
+      <div class="bigval" id="budgetLbl">$12.0M</div>
+    </div>
+    <div class="slider-row" style="margin-top:2px">
+      <input type="range" id="equity" min="0" max="100" step="5" value="0">
+      <div class="bigval" id="equityLbl" style="font-size:16px">no floor</div>
+    </div>
+    <p class="note" style="margin:2px 0 10px">Equity floor: the share of the budget spread
+      across <em>every</em> governorate by area before the rest is targeted. No ministry with
+      an equity mandate will fund three districts out of twenty, so this prices the
+      constraint instead of ignoring it.</p>
+    <div class="cmp" id="cmp"></div>
+    <div class="controls" style="margin:16px 0 8px">
+      <div class="seg" id="viewSeg">
+        <button data-v="list" aria-pressed="true">Ranked list</button>
+        <button data-v="table" aria-pressed="false">Table</button>
+      </div>
+    </div>
+    <ol class="rank" id="rank"></ol>
+    <div id="tableView" class="hidden"></div>
+  </section>
+</div>
+
+<div class="grid">
+  <section class="card">
+    <h2>Where each governorate's water actually goes</h2>
+    <p class="note">Seasonal water balance split into transpiration (productive),
+      evaporation (recoverable) and interception. The evaporation share is the target.</p>
+    <div class="stlegend">
+      <span><b style="background:var(--series-1)"></b>Transpiration, grew a crop</span>
+      <span><b style="background:var(--series-2)"></b>Evaporation, recoverable</span>
+      <span><b style="background:var(--series-3)"></b>Interception</span>
+    </div>
+    <div class="stack" id="stack"></div>
+  </section>
+
+  <section class="card">
+    <h2>Assumptions, change them and watch the answer move</h2>
+    <p class="note">These are literature-order <strong>estimates, not measurements</strong>.
+      The ranking depends on them, so they are exposed rather than buried. If you have better
+      figures, type them in, everything above recalculates.</p>
+    <div class="asm" id="asm"></div>
+  </section>
+</div>
+
+<footer>
+  <div class="fgrid">
+    <div>
+      <h3>Method</h3>
+      Recoverable water = E<sub>mm</sub> × irrigated ha × 10 × reduction fraction.<br>
+      Annual cost = (USD/ha ÷ life years) × ha. Ranked by USD per m³.<br>
+      Budget spent cheapest-water-first. The baseline splits the same budget by irrigated
+      area, a neutral prior, <em>not</em> a documented description of ministry practice.
+      One measure per governorate. Water saved is annualised, so measures lasting through
+      the winter season are credited for both.
+    </div>
+    <div>
+      <h3>Data</h3>
+      Upstream tool: <a href="https://zemamipa.streamlit.app/">IPAT</a>, the irrigation assessment
+      tool hosted by Egypt's MWRI (WaPOR v3 Level 3, 20 m, Middle &amp; West Delta, ~1.5 Mha).<br>
+      This layer: FAO WaPOR v3 Level 2 (100 m, dekadal) AETI, E, T, I.<br>
+      Cropland mask: seasonal AETI &gt; 200 mm, in Egypt, ET is its own cropland mask.<br>
+      Boundaries: Natural Earth admin-1 (public domain).<br>
+      Protocol after <a href="https://github.com/wateraccounting/WaPORIPA">WaPORIPA</a>.
+    </div>
+    <div>
+      <h3>Known weaknesses</h3>
+      Intervention costs and reduction fractions are estimates.<br>
+      Cultivated-area figures are approximate planning numbers, not CAPMAS/MALR statistics.<br>
+      Evaporation saved on-field is not automatically water saved at basin scale, some
+      returns to the aquifer or a drain and is reused downstream.<br>
+      Suppressing soil evaporation can convert E to transpiration and yield rather than to
+      saved water, so recoverable E is an upper bound on volume.<br>
+      ETLook's E/T partitioning is least constrained over standing water, which is exactly
+      where our signal is.<br>
+      Administrative polygons contain large desert areas; hatched governorates are mostly desert
+      and their statistics describe only the irrigated fraction inside them.
+    </div>
+  </div>
+</footer>
+</div>
+
+<div id="tip"></div>
+
+<script>
+const DATA = {"districts":[{"gov":"Alexandria","ar":"محافظة الإسكندرية","sys":"Delta - other","irr_ha":70687,"cult_ha":42000,"aeti":364.4,"e":79.4,"t":284.9,"i":0.1,"conf":"high","dens":0.307,"geom":[[[29.598,31.01],[29.766,31.122],[29.782,31.148],[29.838,31.154],[29.885,31.19],[29.864,31.196],[29.877,31.214],[29.898,31.203],[30.07,31.333],[30.067,31.305],[30.098,31.285],[30.038,31.181],[30.0,31.141],[29.867,31.072],[29.91,31.005],[29.864,30.94],[29.867,30.917],[29.985,30.761],[30.013,30.698],[29.928,30.591],[29.729,30.503],[29.684,30.462],[29.625,30.337],[29.598,31.01]]],"gtype":"Polygon"},{"gov":"Assiut","ar":"محافظة أسيوط","sys":"Nile Valley","irr_ha":148668,"cult_ha":168000,"aeti":688.0,"e":162.6,"t":525.3,"i":0.2,"conf":"high","dens":0.571,"geom":[[[30.671,27.634],[30.765,27.631],[30.834,27.609],[30.941,27.62],[30.939,27.502],[30.966,27.436],[31.072,27.373],[31.237,27.317],[31.288,27.283],[31.341,27.19],[31.489,27.068],[31.619,26.833],[31.553,26.837],[31.462,26.94],[31.393,26.882],[31.3,26.837],[31.162,27.08],[31.08,27.15],[30.939,27.209],[30.791,27.337],[30.681,27.537],[30.671,27.634]]],"gtype":"Polygon"},{"gov":"Aswan","ar":"محافظة أسوان","sys":"Nile Valley","irr_ha":79350,"cult_ha":63000,"aeti":737.6,"e":186.0,"t":551.6,"i":0.0,"conf":"medium","dens":0.051,"geom":[[[31.495,21.995],[31.435,21.995],[31.491,22.148],[31.483,22.195],[31.461,22.215],[31.423,22.227],[31.385,22.214],[31.314,22.102],[31.225,22.197],[31.278,22.269],[31.492,22.324],[31.597,22.433],[31.62,22.503],[31.594,22.648],[31.623,22.705],[31.651,22.73],[31.703,22.744],[31.834,22.723],[32.193,22.872],[32.297,22.814],[32.375,22.814],[32.415,22.771],[32.436,22.773],[32.492,22.86],[32.523,22.971],[32.634,23.216],[32.762,23.362],[32.765,23.396],[32.748,23.419],[32.501,23.406],[32.438,23.423],[32.426,23.449],[32.479,23.651],[32.528,23.714],[32.585,23.751],[32.733,23.773],[32.763,23.794],[32.745,23.836],[32.646,23.896],[32.655,23.999],[32.695,24.024],[32.831,24.038],[32.874,24.08],[32.886,24.126],[32.871,24.199],[32.878,24.49],[32.93,24.649],[32.899,24.759],[32.85,24.857],[32.835,24.974],[32.808,25.033],[32.77,25.078],[32.654,25.146],[32.694,25.179],[32.705,25.27],[32.908,25.129],[32.98,25.031],[33.009,24.914],[33.019,24.744],[33.131,24.524],[33.108,24.441],[33.002,24.303],[32.972,24.156],[33.01,23.962],[33.069,23.836],[33.158,23.746],[33.168,23.631],[33.14,23.531],[33.162,23.438],[33.213,23.33],[33.162,23.199],[33.115,23.157],[33.056,23.057],[33.075,23.025],[33.215,22.96],[33.283,22.884],[33.332,22.743],[33.33,22.706],[33.29,22.709],[33.121,22.844],[32.96,22.845],[32.87,22.92],[32.838,22.928],[32.78,22.84],[32.784,22.754],[32.762,22.702],[32.537,22.499],[32.455,22.466],[32.338,22.461],[32.278,22.486],[32.181,22.572],[32.137,22.581],[32.044,22.372],[31.996,22.312],[31.945,22.279],[31.86,22.265],[31.799,22.194],[31.57,22.091],[31.524,22.05],[31.495,21.995]]],"gtype":"Polygon"},{"gov":"Beheira","ar":"محافظة البحيرة","sys":"Delta - rice belt","irr_ha":695522,"cult_ha":428400,"aeti":511.3,"e":106.3,"t":405.0,"i":0.0,"conf":"high","dens":0.591,"geom":[[[30.098,31.285],[30.173,31.271],[30.14,31.237],[30.165,31.217],[30.207,31.238],[30.202,31.227],[30.22,31.22],[30.261,31.244],[30.269,31.265],[30.289,31.238],[30.303,31.271],[30.288,31.278],[30.241,31.265],[30.255,31.278],[30.179,31.278],[30.252,31.303],[30.313,31.351],[30.348,31.421],[30.351,31.498],[30.378,31.447],[30.425,31.429],[30.426,31.385],[30.449,31.375],[30.458,31.348],[30.474,31.34],[30.483,31.355],[30.518,31.328],[30.52,31.289],[30.494,31.238],[30.515,31.238],[30.525,31.196],[30.57,31.2],[30.723,31.062],[30.728,31.019],[30.764,30.984],[30.752,30.977],[30.782,30.923],[30.757,30.886],[30.794,30.868],[30.762,30.827],[30.816,30.827],[30.753,30.776],[30.769,30.76],[30.792,30.764],[30.774,30.716],[30.794,30.695],[30.805,30.613],[30.838,30.587],[30.824,30.552],[30.851,30.546],[30.831,30.498],[30.851,30.453],[30.844,30.401],[30.879,30.373],[30.833,30.362],[30.833,30.334],[30.369,29.971],[30.329,29.898],[29.672,30.252],[29.625,30.337],[29.684,30.462],[29.729,30.503],[29.928,30.591],[30.013,30.698],[29.985,30.761],[29.867,30.917],[29.864,30.94],[29.91,31.005],[29.868,31.076],[30.011,31.149],[30.098,31.285]]],"gtype":"Polygon"},{"gov":"Beni Suef","ar":"محافظة بني سويف","sys":"Nile Valley","irr_ha":131054,"cult_ha":126000,"aeti":680.4,"e":159.2,"t":521.1,"i":0.0,"conf":"high","dens":0.273,"geom":[[[30.316,28.976],[30.78,29.082],[30.864,29.121],[31.102,29.4],[31.202,29.39],[31.256,29.339],[31.253,29.203],[31.217,29.122],[30.993,28.846],[30.944,28.716],[30.769,28.781],[29.749,28.759],[29.815,29.088],[30.25,29.018],[30.316,28.976]]],"gtype":"Polygon"},{"gov":"Dakahlia","ar":"محافظة الدقهلية","sys":"Delta - rice belt","irr_ha":329180,"cult_ha":319200,"aeti":641.6,"e":127.9,"t":513.7,"i":0.0,"conf":"high","dens":0.909,"geom":[[[[32.256,31.276],[32.214,31.278],[32.207,31.295],[32.257,31.289],[32.256,31.276]]],[[[31.795,31.278],[31.829,31.274],[31.834,31.252],[31.886,31.224],[31.906,31.252],[31.906,31.224],[31.893,31.217],[31.906,31.217],[31.899,31.203],[31.927,31.211],[31.926,31.187],[31.987,31.23],[32.009,31.211],[32.037,31.217],[32.037,31.15],[32.016,31.128],[32.044,31.142],[32.052,31.129],[31.948,31.084],[31.784,31.066],[31.668,30.909],[31.62,30.884],[31.622,30.848],[31.576,30.805],[31.421,30.796],[31.367,30.772],[31.358,30.726],[31.381,30.617],[31.353,30.574],[31.296,30.57],[31.254,30.588],[31.27,30.661],[31.214,30.837],[31.255,30.854],[31.235,30.882],[31.255,30.889],[31.242,30.899],[31.262,30.923],[31.255,30.964],[31.297,30.984],[31.306,31.017],[31.302,31.032],[31.248,31.018],[31.218,31.031],[31.237,31.115],[31.3,31.131],[31.273,31.162],[31.282,31.349],[31.27,31.419],[31.245,31.455],[31.252,31.479],[31.35,31.53],[31.524,31.45],[31.572,31.444],[31.5,31.365],[31.56,31.351],[31.564,31.326],[31.634,31.291],[31.65,31.3],[31.651,31.326],[31.682,31.333],[31.691,31.311],[31.69,31.287],[31.666,31.293],[31.659,31.278],[31.676,31.259],[31.626,31.243],[31.632,31.217],[31.597,31.191],[31.61,31.165],[31.78,31.246],[31.795,31.278]]],[[[32.094,31.366],[32.129,31.337],[32.2,31.295],[32.07,31.354],[32.091,31.347],[32.094,31.366]]]],"gtype":"MultiPolygon"},{"gov":"Damietta","ar":"محافظة دمياط","sys":"Delta - rice belt","irr_ha":47357,"cult_ha":44100,"aeti":590.4,"e":92.5,"t":498.0,"i":0.0,"conf":"high","dens":0.706,"geom":[[[32.083,31.359],[31.995,31.395],[31.968,31.437],[31.994,31.438],[31.918,31.524],[31.865,31.525],[31.845,31.498],[31.865,31.498],[31.879,31.429],[31.842,31.465],[31.824,31.443],[31.858,31.443],[31.855,31.423],[31.879,31.416],[31.83,31.409],[31.845,31.395],[31.828,31.368],[31.858,31.354],[31.797,31.36],[31.796,31.311],[31.769,31.299],[31.773,31.276],[31.795,31.278],[31.78,31.246],[31.61,31.165],[31.597,31.191],[31.632,31.217],[31.626,31.243],[31.676,31.259],[31.659,31.278],[31.666,31.293],[31.693,31.291],[31.686,31.326],[31.651,31.326],[31.65,31.3],[31.634,31.291],[31.564,31.326],[31.56,31.351],[31.499,31.371],[31.572,31.444],[31.748,31.482],[31.874,31.536],[31.913,31.535],[31.945,31.521],[32.009,31.417],[32.057,31.375],[32.094,31.366],[32.083,31.359]]],"gtype":"Polygon"},{"gov":"Fayoum","ar":"محافظة الفيوم","sys":"Nile Valley","irr_ha":154609,"cult_ha":168000,"aeti":608.1,"e":148.7,"t":459.4,"i":0.0,"conf":"high","dens":0.258,"geom":[[[31.102,29.4],[30.864,29.121],[30.78,29.082],[30.364,28.98],[30.316,28.976],[30.25,29.018],[29.815,29.088],[30.355,29.536],[30.536,29.63],[30.746,29.714],[30.956,29.737],[31.002,29.705],[31.03,29.681],[31.102,29.4]]],"gtype":"Polygon"},{"gov":"Gharbia","ar":"محافظة الغربية","sys":"Delta - other","irr_ha":177584,"cult_ha":172200,"aeti":629.8,"e":143.6,"t":486.2,"i":0.0,"conf":"high","dens":0.922,"geom":[[[30.996,30.68],[30.928,30.717],[30.796,30.68],[30.774,30.716],[30.792,30.764],[30.769,30.76],[30.753,30.776],[30.816,30.827],[30.762,30.827],[30.794,30.868],[30.757,30.886],[30.782,30.923],[30.752,30.977],[30.78,31.004],[30.849,30.983],[30.908,30.99],[30.952,31.015],[31.024,31.019],[31.049,31.034],[31.071,31.121],[31.157,31.111],[31.19,31.132],[31.222,31.13],[31.248,31.11],[31.236,31.113],[31.218,31.031],[31.248,31.018],[31.305,31.03],[31.297,30.984],[31.255,30.964],[31.262,30.923],[31.242,30.899],[31.255,30.889],[31.235,30.882],[31.255,30.854],[31.214,30.837],[31.27,30.661],[31.251,30.565],[31.172,30.635],[31.09,30.646],[31.061,30.688],[30.996,30.68]]],"gtype":"Polygon"},{"gov":"Giza","ar":"محافظة الجيزة","sys":"Nile Valley","irr_ha":107064,"cult_ha":84000,"aeti":524.3,"e":138.3,"t":386.0,"i":0.0,"conf":"medium","dens":0.029,"geom":[[[29.749,28.759],[29.587,28.384],[29.46,28.236],[29.309,28.136],[28.846,27.921],[28.775,27.873],[28.653,27.668],[27.325,27.668],[27.757,28.484],[27.832,28.566],[28.699,28.775],[28.901,28.909],[29.551,29.483],[30.329,29.898],[30.369,29.971],[30.833,30.334],[30.91,30.34],[30.927,30.292],[30.97,30.273],[30.991,30.215],[31.068,30.222],[31.167,30.156],[31.229,30.141],[31.238,30.115],[31.221,30.008],[31.289,29.885],[31.292,29.76],[31.929,29.783],[31.869,28.968],[31.501,29.066],[31.433,29.103],[31.255,29.299],[31.256,29.339],[31.235,29.372],[31.173,29.398],[31.102,29.4],[31.03,29.681],[30.956,29.737],[30.746,29.714],[30.536,29.63],[30.282,29.485],[29.815,29.088],[29.749,28.759]]],"gtype":"Polygon"},{"gov":"Ismailia","ar":"محافظة الإسماعيلية","sys":"Delta - other","irr_ha":149800,"cult_ha":105000,"aeti":431.8,"e":116.3,"t":315.5,"i":0.0,"conf":"medium","dens":0.262,"geom":[[[32.143,31.08],[32.311,31.119],[32.602,30.974],[32.652,30.504],[32.746,30.373],[32.799,30.254],[32.577,30.263],[32.459,30.204],[32.334,30.237],[32.248,30.243],[31.887,30.232],[31.8,30.504],[31.764,30.557],[31.877,30.548],[31.974,30.56],[32.099,30.677],[32.13,30.742],[32.118,30.833],[32.202,30.994],[32.192,31.036],[32.143,31.08]]],"gtype":"Polygon"},{"gov":"Kafr El Sheikh","ar":"محافظة كفر الشيخ","sys":"Delta - rice belt","irr_ha":292144,"cult_ha":256200,"aeti":607.9,"e":116.0,"t":491.9,"i":0.0,"conf":"high","dens":0.844,"geom":[[[30.425,31.429],[30.371,31.462],[30.362,31.509],[30.456,31.463],[30.536,31.464],[30.974,31.587],[30.628,31.434],[30.558,31.422],[30.543,31.395],[30.627,31.389],[30.675,31.422],[30.734,31.388],[30.756,31.423],[30.799,31.446],[30.892,31.419],[30.94,31.443],[30.94,31.457],[30.981,31.437],[31.029,31.518],[31.081,31.514],[31.111,31.491],[31.129,31.504],[31.111,31.512],[31.13,31.517],[31.071,31.565],[30.978,31.584],[31.097,31.608],[31.35,31.53],[31.277,31.496],[31.246,31.464],[31.282,31.349],[31.273,31.162],[31.3,31.131],[31.248,31.11],[31.202,31.133],[31.157,31.111],[31.071,31.121],[31.04,31.026],[30.849,30.983],[30.78,31.004],[30.764,30.984],[30.728,31.019],[30.728,31.052],[30.699,31.092],[30.652,31.115],[30.57,31.2],[30.525,31.196],[30.515,31.238],[30.494,31.238],[30.52,31.289],[30.518,31.328],[30.483,31.355],[30.474,31.34],[30.458,31.348],[30.449,31.375],[30.426,31.385],[30.425,31.429]]],"gtype":"Polygon"},{"gov":"Menoufia","ar":"محافظة المنوفية","sys":"Delta - other","irr_ha":135139,"cult_ha":147000,"aeti":610.6,"e":148.4,"t":462.2,"i":0.0,"conf":"high","dens":0.933,"geom":[[[31.029,30.21],[30.979,30.226],[30.97,30.273],[30.927,30.292],[30.917,30.336],[30.883,30.346],[30.851,30.326],[30.827,30.348],[30.879,30.373],[30.844,30.401],[30.851,30.453],[30.831,30.498],[30.851,30.546],[30.824,30.552],[30.838,30.587],[30.817,30.596],[30.798,30.638],[30.796,30.68],[30.822,30.694],[30.928,30.717],[30.996,30.68],[31.061,30.688],[31.09,30.646],[31.18,30.631],[31.262,30.552],[31.228,30.56],[31.228,30.518],[31.136,30.446],[31.125,30.403],[31.101,30.416],[31.107,30.382],[31.056,30.375],[31.104,30.332],[31.111,30.227],[31.145,30.175],[31.068,30.222],[31.029,30.21]]],"gtype":"Polygon"},{"gov":"Minya","ar":"محافظة المنيا","sys":"Nile Valley","irr_ha":240743,"cult_ha":260400,"aeti":660.4,"e":151.9,"t":508.5,"i":0.0,"conf":"high","dens":0.124,"geom":[[[28.653,27.668],[28.775,27.873],[28.846,27.921],[29.309,28.136],[29.46,28.236],[29.587,28.384],[29.749,28.759],[30.769,28.781],[30.944,28.716],[30.907,28.451],[30.853,28.366],[30.815,28.259],[30.833,28.148],[30.907,28.003],[30.921,27.881],[30.955,27.786],[30.959,27.716],[30.941,27.62],[30.834,27.609],[30.765,27.631],[30.698,27.624],[30.671,27.634],[30.688,27.668],[28.653,27.668]]],"gtype":"Polygon"},{"gov":"Qalyubia","ar":"محافظة القليوبية","sys":"Delta - other","irr_ha":74955,"cult_ha":84000,"aeti":589.9,"e":152.9,"t":436.9,"i":0.0,"conf":"high","dens":0.741,"geom":[[[31.594,30.19],[31.326,30.165],[31.306,30.137],[31.238,30.115],[31.229,30.141],[31.167,30.156],[31.115,30.215],[31.104,30.332],[31.056,30.375],[31.107,30.382],[31.101,30.416],[31.125,30.403],[31.136,30.446],[31.228,30.518],[31.228,30.56],[31.262,30.552],[31.254,30.588],[31.296,30.57],[31.353,30.574],[31.294,30.528],[31.273,30.437],[31.343,30.359],[31.386,30.28],[31.594,30.19]]],"gtype":"Polygon"},{"gov":"Qena","ar":"محافظة قنا","sys":"Nile Valley","irr_ha":182502,"cult_ha":126000,"aeti":774.4,"e":185.8,"t":588.6,"i":0.0,"conf":"medium","dens":0.508,"geom":[[[32.137,26.237],[32.211,26.159],[32.27,26.131],[32.54,26.252],[32.684,26.259],[32.806,26.214],[32.894,26.114],[32.93,25.971],[32.915,25.859],[32.845,25.74],[32.661,25.572],[32.623,25.499],[32.64,25.357],[32.664,25.307],[32.705,25.27],[32.694,25.179],[32.654,25.146],[32.559,25.212],[32.519,25.26],[32.443,25.597],[32.494,25.665],[32.658,25.793],[32.687,25.894],[32.748,26.001],[32.742,26.066],[32.696,26.106],[32.619,26.104],[32.361,26.0],[32.224,25.97],[32.163,25.979],[32.111,26.005],[31.952,26.14],[32.013,26.184],[32.085,26.195],[32.137,26.237]],[[32.651,25.683],[32.669,25.721],[32.65,25.73],[32.625,25.687],[32.651,25.683]]],"gtype":"Polygon"},{"gov":"Sharqia","ar":"محافظة الشرقية","sys":"Delta - rice belt","irr_ha":393385,"cult_ha":378000,"aeti":594.9,"e":143.8,"t":451.1,"i":0.0,"conf":"high","dens":0.8,"geom":[[[[32.142,31.087],[32.166,31.114],[32.18,31.107],[32.184,31.125],[32.219,31.105],[32.272,31.119],[32.281,31.155],[32.262,31.17],[32.288,31.169],[32.29,31.114],[32.142,31.087]]],[[[32.052,31.129],[32.07,31.107],[32.044,31.086],[32.084,31.084],[32.084,31.066],[32.106,31.053],[32.132,31.066],[32.107,31.073],[32.098,31.093],[32.143,31.08],[32.192,31.036],[32.2,30.981],[32.118,30.833],[32.13,30.742],[32.12,30.716],[32.032,30.602],[31.974,30.56],[31.877,30.548],[31.764,30.557],[31.81,30.479],[31.843,30.339],[31.594,30.19],[31.386,30.28],[31.343,30.359],[31.273,30.437],[31.294,30.528],[31.376,30.597],[31.358,30.726],[31.367,30.772],[31.421,30.796],[31.576,30.805],[31.622,30.848],[31.62,30.884],[31.668,30.909],[31.784,31.066],[31.948,31.084],[32.052,31.129]]]],"gtype":"MultiPolygon"},{"gov":"Sohag","ar":"محافظة سوهاج","sys":"Nile Valley","irr_ha":144522,"cult_ha":176400,"aeti":703.9,"e":175.9,"t":527.7,"i":0.2,"conf":"high","dens":0.546,"geom":[[[32.27,26.131],[32.211,26.159],[32.137,26.237],[32.085,26.195],[32.013,26.184],[31.952,26.14],[31.534,26.611],[31.439,26.683],[31.3,26.837],[31.393,26.882],[31.462,26.94],[31.553,26.837],[31.619,26.833],[31.787,26.728],[31.831,26.69],[31.896,26.589],[31.919,26.499],[31.959,26.439],[32.033,26.384],[32.155,26.347],[32.308,26.158],[32.27,26.131]]],"gtype":"Polygon"}],"interventions":{"laser_levelling":{"label":"Laser land levelling","usd_per_ha":75,"life_years":5,"e_reduction":0.1,"seasons_per_year":2,"applies_to":["Delta - rice belt","Delta - other","Nile Valley"],"note":"Reduces ponding depth and over-irrigation of high spots, so less standing water and less saturated soil surface. Already deployed at scale in Egypt, so cost and effect are the best constrained of the four. Benefits both summer and winter crops."},"awd":{"label":"Alternate wetting & drying (rice)","usd_per_ha":25,"life_years":1,"e_reduction":0.1,"seasons_per_year":1,"applies_to":["Delta - rice belt"],"note":"Training + field water tubes. IMPORTANT: AWD's headline saving in the literature is in water APPLIED - percolation and seepage - not in evapotranspiration. In the closed, high-reuse Delta, percolation is largely recovered downstream, so we deliberately exclude it and count ONLY the evaporation component: removing the free water surface for part of the season. Hence 10%, not the 25-30% quoted for total water application."},"mulching":{"label":"Straw / plastic mulching","usd_per_ha":260,"life_years":1,"e_reduction":0.3,"seasons_per_year":1,"applies_to":["Delta - other","Nile Valley"],"note":"Suppresses bare-soil evaporation between rows. Caveat: some of the conserved soil water is taken up and transpired instead, converting E to T and yield rather than to saved water - good agronomy, zero water volume. Treat as an upper bound."},"drip_retrofit":{"label":"Drip retrofit","usd_per_ha":1800,"life_years":10,"e_reduction":0.45,"seasons_per_year":2,"applies_to":["Delta - other","Nile Valley"],"note":"Largest saving, largest capital cost, and the same E-to-T compensation caveat as mulching. Not viable for paddy rice."}},"meta":{"data_status":"WAPOR","source":"FAO WaPOR v3 Level 2 (100 m), dekadal","season_label":"Summer (Nili/Sefi) 2024","season_start":"2024-05-01","season_end":"2024-10-31","cropland_mask":"seasonal AETI > 200.0 mm","generated_by":"pipeline/03_zonal_stats.py"},"data_status":"WAPOR","default_budget":12000000,"season_label":"Summer (Nili/Sefi) 2024"};
+const D = DATA.districts;
+let IV = JSON.parse(JSON.stringify(DATA.interventions));
+let metric = "e_mm", view = "list", budget = DATA.default_budget, sel = null, equity = 0;
+
+const fmt = (n,d=0)=>n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const usd = n => n>=1e5 ? '$'+(n/1e6).toFixed(2).replace(/0$/,'')+'M' : '$'+fmt(n);
+
+/* ---------------- decision engine (mirrors pipeline/04) ---------------- */
+function options(){
+  const out=[];
+  for(const d of D){
+    for(const [key,iv] of Object.entries(IV)){
+      if(!iv.applies_to.includes(d.sys)) continue;
+      if(d.irr_ha<=0 || d.e<=0) continue;
+      const seasons = iv.seasons_per_year || 1;
+      const rec = d.e * d.irr_ha * 10 * iv.e_reduction * seasons;  // m3 per year
+      const cost = iv.usd_per_ha / iv.life_years * d.irr_ha;  // USD per year
+      out.push({gov:d.gov, sys:d.sys, key, label:iv.label, ha:d.irr_ha, e:d.e,
+                conf:d.conf, rec, cost, upm3: cost/rec});
+    }
+  }
+  return out.sort((a,b)=>a.upm3-b.upm3);
+}
+function allocate(opts,b,floor){
+  floor = floor||0;
+  const bestOf={};
+  for(const o of opts) if(!(o.gov in bestOf)) bestOf[o.gov]=o;
+  const funded={};
+  // reserved share, spread by irrigated area across every district
+  const reserved=b*floor;
+  if(reserved>0){
+    const totHa=D.reduce((s,d)=>s+d.irr_ha,0);
+    for(const d of D){
+      const o=bestOf[d.gov]; if(!o||totHa<=0) continue;
+      funded[d.gov]=Math.min(reserved*d.irr_ha/totHa, o.cost);
+    }
+  }
+  // remainder, cheapest water first
+  let remaining=b-Object.values(funded).reduce((s,v)=>s+v,0);
+  for(const o of opts){
+    if(remaining<=0) break;
+    if(bestOf[o.gov]!==o) continue;
+    const head=o.cost-(funded[o.gov]||0);
+    if(head<=0) continue;
+    const take=Math.min(head,remaining);
+    funded[o.gov]=(funded[o.gov]||0)+take;
+    remaining-=take;
+  }
+  let spent=0,saved=0; const picks=[];
+  Object.entries(funded).sort((a,b2)=>bestOf[a[0]].upm3-bestOf[b2[0]].upm3)
+    .forEach(([gov,usd])=>{
+      if(usd<=0) return;
+      const o=bestOf[gov], frac=usd/o.cost;
+      spent+=usd; saved+=o.rec*frac;
+      picks.push({...o, funded:usd, frac, saved:o.rec*frac, ha_treated:o.ha*frac});
+    });
+  return {picks,spent,saved};
+}
+function uniform(opts,b){
+  const tot=D.reduce((s,d)=>s+d.irr_ha,0); let spent=0,saved=0;
+  for(const d of D){
+    const share=b*d.irr_ha/tot;
+    const local=opts.filter(o=>o.gov===d.gov);
+    if(!local.length||share<=0) continue;
+    const best=local[0];
+    const take=Math.min(share,best.cost);
+    spent+=take; saved+=best.rec*(take/best.cost);
+  }
+  return {spent,saved};
+}
+const best = {};           // best option per governorate, filled on each render
+
+/* ---------------- colour ---------------- */
+const RAMP=['--seq-100','--seq-200','--seq-300','--seq-400','--seq-500','--seq-600','--seq-700']
+  .map(v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim());
+function ramp(){return ['--seq-100','--seq-200','--seq-300','--seq-400','--seq-500','--seq-600','--seq-700']
+  .map(v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim());}
+function metricVal(d){
+  if(metric==='e_mm') return d.e;
+  if(metric==='nb_mcm') return d.e*d.irr_ha*10/1e6;
+  if(metric==='bf') return d.t/d.aeti;
+  return best[d.gov] ? best[d.gov].upm3 : 0;
+}
+const METRIC_LABEL={e_mm:'Evaporation, mm/season',nb_mcm:'Non-beneficial volume, Mm³/season',
+  bf:'Beneficial fraction (T/AETI)',cost:'Cost of saved water, USD/m³'};
+// beneficial fraction and cost are "less is worse" -> invert so dark always = worse
+const INVERT={bf:true,cost:true};
+
+/* ---------------- map ---------------- */
+let PROJ=null;
+function buildProjection(){
+  let xs=[],ys=[];
+  for(const d of D) eachRing(d,r=>r.forEach(p=>{xs.push(p[0]);ys.push(p[1])}));
+  const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  const k=Math.cos((y0+y1)/2*Math.PI/180);
+  const W=760, pad=8;
+  const w=(x1-x0)*k, h=(y1-y0);
+  const s=(W-2*pad)/w, H=h*s+2*pad;
+  PROJ={x0,y1,k,s,pad,W,H};
+}
+function eachRing(d,fn){
+  const c=d.geom;
+  if(d.gtype==='Polygon') c.forEach(fn);
+  else c.forEach(poly=>poly.forEach(fn));
+}
+function px(p){return [PROJ.pad+(p[0]-PROJ.x0)*PROJ.k*PROJ.s, PROJ.pad+(PROJ.y1-p[1])*PROJ.s];}
+function pathOf(d){
+  let s='';
+  eachRing(d,r=>{ s+='M'+r.map(p=>px(p).map(v=>v.toFixed(1)).join(',')).join('L')+'Z'; });
+  return s;
+}
+function centroidOf(d){
+  let sx=0,sy=0,n=0;
+  eachRing(d,r=>r.forEach(p=>{const q=px(p);sx+=q[0];sy+=q[1];n++}));
+  return [sx/n,sy/n];
+}
+function drawMap(){
+  if(!PROJ) buildProjection();
+  const R=ramp();
+  const vals=D.map(metricVal);
+  const lo=Math.min(...vals), hi=Math.max(...vals);
+  const col=v=>{
+    let t=(hi===lo)?0.5:(v-lo)/(hi-lo);
+    if(INVERT[metric]) t=1-t;
+    return R[Math.min(R.length-1,Math.max(0,Math.round(t*(R.length-1))))];
+  };
+  let svg=`<svg class="map" viewBox="0 0 ${PROJ.W} ${PROJ.H.toFixed(0)}" role="img"
+     aria-label="Choropleth of Egyptian governorates by ${METRIC_LABEL[metric]}">
+     <defs><pattern id="desert" width="6" height="6" patternTransform="rotate(45)"
+       patternUnits="userSpaceOnUse">
+       <rect width="6" height="6" fill="var(--surface-2)"></rect>
+       <line x1="0" y1="0" x2="0" y2="6" stroke="var(--surface-1)" stroke-width="3.4"></line>
+     </pattern></defs>`;
+  for(const d of D){
+    svg+=`<path d="${pathOf(d)}" fill="${col(metricVal(d))}" data-gov="${d.gov}"
+      class="${sel&&sel!==d.gov?'dim':''}"></path>`;
+    // Administrative polygons include desert. Hatch the ones that are mostly desert
+    // so the colour is not read as "this whole area evaporates".
+    if(d.dens < 0.25){
+      svg+=`<path d="${pathOf(d)}" fill="url(#desert)" opacity="${(1-d.dens/0.25)*0.62}"
+        pointer-events="none"></path>`;
+    }
+  }
+  // ---- labels with collision avoidance ---------------------------------
+  // Centroids alone overlap badly in the middle Delta, where Gharbia, Menoufia
+  // and Qalyubia are small and adjacent. Place each label at its centroid, then
+  // push overlapping boxes apart and draw a leader line back to the polygon for
+  // any label that had to move. Small governorates end up labelled outside
+  // their own shape, which is correct: an unreadable label is worse than a
+  // displaced one.
+  const CH=5.0, LH=11;                       // approx char width / line height
+  const lab=D.map(d=>{
+    const c=centroidOf(d);
+    return {gov:d.gov, ax:c[0], ay:c[1], x:c[0], y:c[1],
+            w:d.gov.length*CH+6, h:LH};
+  });
+  for(let it=0; it<220; it++){
+    let moved=false;
+    for(let i=0;i<lab.length;i++){
+      for(let j=i+1;j<lab.length;j++){
+        const a=lab[i], b=lab[j];
+        const dx=b.x-a.x, dy=b.y-a.y;
+        const ox=(a.w+b.w)/2-Math.abs(dx), oy=(a.h+b.h)/2-Math.abs(dy);
+        if(ox>0 && oy>0){                    // boxes intersect
+          moved=true;
+          // resolve along the shallower axis: keeps labels near their polygon
+          if(oy<ox){ const s2=(dy<0?-1:1)*oy/2; a.y-=s2; b.y+=s2; }
+          else     { const s2=(dx<0?-1:1)*ox/2; a.x-=s2; b.x+=s2; }
+        }
+      }
+    }
+    // gentle pull back toward the polygon so labels do not drift away
+    lab.forEach(l=>{ l.x+=(l.ax-l.x)*0.02; l.y+=(l.ay-l.y)*0.02; });
+    if(!moved) break;
+  }
+  lab.forEach(l=>{
+    l.x=Math.max(l.w/2+2, Math.min(PROJ.W-l.w/2-2, l.x));
+    l.y=Math.max(9, Math.min(PROJ.H-4, l.y));
+    const d=Math.hypot(l.x-l.ax, l.y-l.ay);
+    if(d>7){
+      svg+=`<line class="leader" x1="${l.ax.toFixed(0)}" y1="${l.ay.toFixed(0)}"
+        x2="${l.x.toFixed(0)}" y2="${(l.y-3).toFixed(0)}"></line>`;
+      svg+=`<circle class="leaderdot" cx="${l.ax.toFixed(0)}" cy="${l.ay.toFixed(0)}" r="1.6"></circle>`;
+    }
+    svg+=`<text x="${l.x.toFixed(0)}" y="${l.y.toFixed(0)}" text-anchor="middle">${l.gov}</text>`;
+  });
+  svg+='</svg>';
+  document.getElementById('mapWrap').innerHTML=svg;
+
+  const fm = metric==='bf' ? (v=>v.toFixed(2)) : metric==='cost' ? (v=>'$'+v.toFixed(3)) : (v=>fmt(v,metric==='nb_mcm'?0:0));
+  document.getElementById('legend').innerHTML =
+    `<span>${INVERT[metric]?'worse':'lower'}</span>
+     <span class="ramp">${R.map(c=>`<i style="background:${c}"></i>`).join('')}</span>
+     <span>${INVERT[metric]?'better':'higher'}</span>
+     <span style="margin-left:6px;color:var(--text-muted)">${METRIC_LABEL[metric]} ·
+     ${fm(INVERT[metric]?hi:lo)} → ${fm(INVERT[metric]?lo:hi)}</span>
+     <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px">
+       <svg width="15" height="11" style="border-radius:2px"><rect width="15" height="11" fill="url(#desert2)"/>
+       <defs><pattern id="desert2" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+       <rect width="6" height="6" fill="var(--muted-mark)"></rect>
+       <line x1="0" y1="0" x2="0" y2="6" stroke="var(--surface-1)" stroke-width="3.4"></line></pattern></defs></svg>
+       mostly desert, value applies to the irrigated fraction only</span>`;
+
+  document.querySelectorAll('svg.map path').forEach(p=>{
+    p.addEventListener('mousemove',e=>{
+      const d=D.find(x=>x.gov===p.dataset.gov); showTip(e,d);
+    });
+    p.addEventListener('mouseleave',hideTip);
+    p.addEventListener('click',()=>{sel = sel===p.dataset.gov?null:p.dataset.gov; render();});
+  });
+}
+
+/* ---------------- tooltip ---------------- */
+const tip=document.getElementById('tip');
+function showTip(e,d){
+  const b=best[d.gov];
+  tip.innerHTML=`<div class="tt">${d.gov} <span style="font-weight:400;color:var(--text-muted)">${d.sys}</span></div>
+    <div class="tr"><span>AETI</span><b>${fmt(d.aeti)} mm</b></div>
+    <div class="tr"><span>Evaporation</span><b>${fmt(d.e)} mm</b></div>
+    <div class="tr"><span>Transpiration</span><b>${fmt(d.t)} mm</b></div>
+    <div class="tr"><span>Beneficial fraction</span><b>${(d.t/d.aeti).toFixed(2)}</b></div>
+    <div class="tr"><span>Irrigated area</span><b>${fmt(d.irr_ha/1000,0)}k ha</b></div>
+    <div class="tr"><span>Irrigated share of polygon</span><b>${(d.dens*100).toFixed(0)}%</b></div>
+    <div class="tr"><span>Non-beneficial</span><b>${fmt(d.e*d.irr_ha*10/1e6,0)} Mm³</b></div>
+    ${b?`<div class="tr" style="margin-top:5px"><span>Best measure</span><b>${b.label}</b></div>
+        <div class="tr"><span>Cost of water</span><b>$${b.upm3.toFixed(3)}/m³</b></div>`:''}
+    <div class="tr" style="margin-top:5px"><span>Confidence</span><b>${d.conf}</b></div>`;
+  tip.classList.add('on');
+  const r=tip.getBoundingClientRect();
+  tip.style.left=Math.min(e.clientX+14, innerWidth-r.width-10)+'px';
+  tip.style.top=Math.min(e.clientY+14, innerHeight-r.height-10)+'px';
+}
+function hideTip(){tip.classList.remove('on');}
+
+/* ---------------- render ---------------- */
+function render(){
+  const opts=options();
+  for(const k in best) delete best[k];
+  for(const o of opts) if(!(o.gov in best)) best[o.gov]=o;
+
+  const {picks,spent,saved}=allocate(opts,budget,equity);
+  const pure=allocate(opts,budget,0);
+  const u=uniform(opts,budget);
+  const gain = u.saved>0 ? (saved/u.saved-1)*100 : 0;
+  const totalNB = D.reduce((s,d)=>s+d.e*d.irr_ha*10,0)/1e6;
+
+  document.getElementById('kpis').innerHTML=`
+    <div class="tile"><div class="k">Water evaporating, not growing</div>
+      <div class="v">${fmt(totalNB)}</div><div class="u">Mm³ per season, study area</div></div>
+    <div class="tile"><div class="k">Budget</div>
+      <div class="v">${usd(budget)}</div><div class="u">${picks.length} governorate${picks.length===1?'':'s'} funded</div></div>
+    <div class="tile"><div class="k">Water recovered, targeted</div>
+      <div class="v">${fmt(saved/1e6)}</div><div class="u">Mm³ · $${(spent/saved).toFixed(3)}/m³</div></div>
+    <div class="tile hero"><div class="k">vs. area-proportional split</div>
+      <div class="v">${gain>0?'+':''}${gain.toFixed(0)}%</div>
+      <div class="u">more water, same money</div></div>`;
+
+  const mx=Math.max(saved,u.saved)||1;
+  document.getElementById('cmp').innerHTML=`
+    <div class="cmprow"><span class="lbl">Targeted</span>
+      <span class="cmpbar on" style="width:${(saved/mx*100).toFixed(1)}%"></span>
+      <span class="num">${fmt(saved/1e6)} Mm³</span></div>
+    <div class="cmprow"><span class="lbl">Area-proportional</span>
+      <span class="cmpbar" style="width:${(u.saved/mx*100).toFixed(1)}%"></span>
+      <span class="num">${fmt(u.saved/1e6)} Mm³</span></div>
+    ${equity>0?`<div class="rmeta" style="margin-top:2px">Equity floor of ${(equity*100).toFixed(0)}%
+       funds ${picks.length} governorates and costs
+       <strong>${((1-saved/pure.saved)*100).toFixed(1)}%</strong> of the water vs. pure targeting.</div>`:''}`;
+
+  const funded=new Set(picks.map(p=>p.gov));
+  const ranked=Object.values(best).sort((a,b)=>a.upm3-b.upm3);
+  const maxRec=Math.max(...ranked.map(o=>o.rec))||1;
+  document.getElementById('rank').innerHTML=ranked.map((o,i)=>{
+    const p=picks.find(x=>x.gov===o.gov);
+    const on=funded.has(o.gov);
+    return `<li data-gov="${o.gov}" style="${sel&&sel!==o.gov?'opacity:.4':''}">
+      <div class="rline"><span class="rnum">${i+1}</span>
+        <span class="rgov">${o.gov}</span>
+        <span class="riv">${o.label}</span>
+        <span class="rval">$${o.upm3.toFixed(3)}/m³</span></div>
+      <div class="bar ${on?'funded':''}" style="width:${Math.max(2,o.rec/maxRec*100).toFixed(1)}%"></div>
+      <div class="rmeta">
+        ${on?`funded ${usd(p.funded)} · ${fmt(p.ha_treated/1000)}k ha · <strong>${fmt(p.saved/1e6,1)} Mm³ saved</strong>`
+            :`not funded at this budget · ${fmt(o.rec/1e6,1)} Mm³ available`}
+        &nbsp;<span class="chip ${on?o.conf:'unfunded'}">${on?o.conf+' confidence':'unfunded'}</span>
+      </div></li>`;
+  }).join('');
+  document.querySelectorAll('.rank li').forEach(li=>{
+    li.style.cursor='pointer';
+    li.onclick=()=>{sel = sel===li.dataset.gov?null:li.dataset.gov; render();};
+  });
+
+  document.getElementById('tableView').innerHTML=`<table>
+    <thead><tr><th>Governorate</th><th>AETI mm</th><th>E mm</th><th>T mm</th><th>BF</th>
+    <th>Irrig. kha</th><th>Non-benef. Mm³</th><th>Measure</th><th>USD/m³</th><th>Funded</th></tr></thead>
+    <tbody>${ranked.map(o=>{const d=D.find(x=>x.gov===o.gov);const p=picks.find(x=>x.gov===o.gov);
+      return `<tr><td>${o.gov}</td><td>${fmt(d.aeti)}</td><td>${fmt(d.e)}</td><td>${fmt(d.t)}</td>
+      <td>${(d.t/d.aeti).toFixed(2)}</td><td>${fmt(d.irr_ha/1000)}</td>
+      <td>${fmt(d.e*d.irr_ha*10/1e6)}</td><td>${o.label}</td><td>${o.upm3.toFixed(3)}</td>
+      <td>${p?usd(p.funded):'-'}</td></tr>`}).join('')}</tbody></table>`;
+
+  const stMax=Math.max(...D.map(d=>d.aeti));
+  document.getElementById('stack').innerHTML=[...D].sort((a,b)=>b.e-a.e).map(d=>`
+    <div class="strow" style="${sel&&sel!==d.gov?'opacity:.4':''}">
+      <span>${d.gov}</span>
+      <span class="stbar" style="width:${(d.aeti/stMax*100).toFixed(1)}%">
+        <span style="background:var(--series-1);width:${(d.t/d.aeti*100).toFixed(1)}%"></span>
+        <span style="background:var(--series-2);width:${(d.e/d.aeti*100).toFixed(1)}%"></span>
+        <span style="background:var(--series-3);width:${(d.i/d.aeti*100).toFixed(1)}%"></span>
+      </span>
+      <span style="text-align:right;font-variant-numeric:tabular-nums;color:var(--text-secondary)">
+        ${(d.e/d.aeti*100).toFixed(0)}% E</span>
+    </div>`).join('');
+
+  drawMap();
+  window.__brief={totalNB,budget,saved,uSaved:u.saved,gain,picks,spent};
+}
+
+/* ---------------- assumptions editor ---------------- */
+function drawAsm(){
+  document.getElementById('asm').innerHTML=Object.entries(IV).map(([k,iv])=>`
+    <div class="asmcard"><h3>${iv.label}</h3><p>${iv.note}</p>
+      <div class="field"><label>Cost, USD/ha</label>
+        <input type="number" data-k="${k}" data-f="usd_per_ha" value="${iv.usd_per_ha}" min="1" step="5"></div>
+      <div class="field"><label>Life, years</label>
+        <input type="number" data-k="${k}" data-f="life_years" value="${iv.life_years}" min="1" step="1"></div>
+      <div class="field"><label>Evaporation avoided</label>
+        <input type="number" data-k="${k}" data-f="e_reduction" value="${iv.e_reduction}" min="0.01" max="0.9" step="0.01"></div>
+    </div>`).join('');
+  document.querySelectorAll('.asmcard input').forEach(inp=>{
+    inp.oninput=()=>{const v=parseFloat(inp.value); if(!isNaN(v)&&v>0){IV[inp.dataset.k][inp.dataset.f]=v; render();}};
+  });
+}
+
+/* ---------------- brief export ---------------- */
+function brief(){
+  // Renders the ministry brief into #briefDoc and hands it to the browser's
+  // print pipeline. "Save as PDF" in the print dialog produces the file.
+  // Deliberately no PDF library: the app must stay one self-contained HTML
+  // that works with no network, which is the whole point of the delivery story.
+  const b=window.__brief, S=DATA;
+  const pct=n=>n.toFixed(1)+'%';
+  const rows=b.picks.map((p,i)=>
+    `<tr><td class="n">${i+1}</td><td>${p.gov}</td><td>${p.label}</td>
+     <td class="n">${usd(p.funded)}</td><td class="n">${fmt(p.ha_treated,0)}</td>
+     <td class="n">${fmt(p.saved/1e6,1)}</td><td class="n">$${p.upm3.toFixed(3)}</td></tr>`).join('');
+  const eq=(S.equity_curve||[]).map(e=>
+    `<tr><td class="n">${(e.equity_floor*100).toFixed(0)}%</td>
+     <td class="n">${e.districts_funded}</td>
+     <td class="n">${fmt(e.water_saved_mcm,1)}</td>
+     <td class="n">${e.water_lost_vs_pure_targeting_pct===0?'-':'−'+pct(e.water_lost_vs_pure_targeting_pct)}</td></tr>`).join('');
+  const cf=S.counterfactuals||{};
+  const dt=new Date? '' : '';
+
+  const doc=document.getElementById('briefDoc');
+  // The print rule hides every direct child of <body>, so #briefDoc has to BE
+  // one. It is authored inside .wrap for readability, so move it out first -
+  // otherwise its hidden ancestor wins and the PDF comes out blank.
+  if(doc.parentNode!==document.body) document.body.appendChild(doc);
+  doc.innerHTML = `
+  <h1>Same Budget, More Water</h1>
+    <p class="tagline">Ranking Egypt's irrigation budget by <strong>the water that evaporated without growing a crop</strong>.</p>
+  <p class="lede">Targeting the on-farm modernisation budget using the WaPOR evaporation–transpiration
+     split · ${S.season_label} · prepared for the budget allocation committee</p>
+
+  <h2>1. The decision this brief supports</h2>
+  <p>The Ministry of Water Resources and Irrigation allocates a fixed annual on-farm modernisation
+     budget across governorates and must justify that spending. IPAT, the irrigation assessment tool
+     already operating on the ministry platform, shows <em>where</em> water productivity is high and
+     low across roughly 1.5 million hectares of the Middle and West Delta. It does not indicate where
+     a unit of spending recovers the most water. This brief supplies that ordering.</p>
+
+  <h2>2. What was measured</h2>
+  <p>FAO WaPOR v3 Level 2 (100 m) dekadal actual evapotranspiration and interception, evaporation,
+     transpiration and interception, summed over 18 dekads covering 1 May – 31 October 2024. Cropland
+     was separated from desert by a seasonal AETI threshold of 200 mm; open water was excluded by
+     JRC Global Surface Water occurrence, by a beneficial-fraction floor, and by a physical ceiling on
+     cropland evaporation. Observed irrigated area totalled 3.56 million hectares against 3.21 million
+     hectares of reported cultivated area.</p>
+  <p><strong>Across the study area, ${fmt(b.totalNB,0)} Mm³ of water evaporated during the season
+     without growing a crop.</strong> That water was delivered and paid for. A share of it is
+     recoverable through low-cost on-farm measures.</p>
+
+  <h2>3. Recommended allocation of a ${usd(b.budget)} budget</h2>
+  <table><thead><tr><th class="n">#</th><th>Governorate</th><th>Measure</th>
+    <th class="n">Funded</th><th class="n">Hectares</th><th class="n">Mm³/yr</th><th class="n">$/m³</th>
+    </tr></thead><tbody>${rows}</tbody></table>
+  <div class="callout"><strong>Targeted allocation recovers ${fmt(b.saved/1e6,1)} Mm³ at
+     $${(b.spent/b.saved).toFixed(3)} per cubic metre.</strong> The same budget distributed in
+     proportion to irrigated area recovers ${fmt(b.uSaved/1e6,1)} Mm³, so ordering the spending
+     yields <strong>${b.gain.toFixed(0)}% more water for the same money</strong>, and the same figure
+     on unit cost.</div>
+
+  <div class="pagebreak"></div>
+  <h2>4. Equity is priced, not assumed away</h2>
+  <p>Spending strictly cheapest-water-first concentrates the budget in a handful of governorates. An
+     equity floor reserves a share of the budget to be distributed across every governorate by
+     irrigated area before the remainder is targeted. The cost of that choice is quantified rather
+     than argued.</p>
+  <table><thead><tr><th class="n">Equity floor</th><th class="n">Governorates funded</th>
+    <th class="n">Water recovered, Mm³</th><th class="n">Cost vs. pure targeting</th>
+    </tr></thead><tbody>${eq}</tbody></table>
+
+  <h2>5. How much of this requires the satellite</h2>
+  <p>The allocation was re-run with the satellite information progressively removed. With
+     per-district evaporation, targeting gains ${cf.full?cf.full.gain_volume_pct.toFixed(1):'-'}%.
+     Knowing only a per-irrigation-system average it gains
+     ${cf.by_system?cf.by_system.gain_volume_pct.toFixed(1):'-'}%. With evaporation held spatially
+     uniform it gains ${cf.flat?cf.flat.gain_volume_pct.toFixed(1):'-'}%. The advantage is therefore
+     entirely spatial, but most of it resides in the system-level pattern rather than in
+     district-level detail.</p>
+
+  <h2>6. Limitations</h2>
+  <p class="fine">
+     <strong>Field scale is not basin scale.</strong> In a closed system such as the Nile Delta, a
+     share of the water an intervention frees was already returning to drains and aquifers and being
+     reused downstream. Suppressing soil evaporation can also convert it to transpiration and yield
+     rather than to recoverable water. Recoverable evaporation is an upper bound, and these figures
+     rank locations against one another; they do not constitute a water account.<br><br>
+     <strong>Retrieval uncertainty is concentrated where the signal is.</strong> The separation of
+     evaporation from transpiration is the least constrained element of the underlying energy-balance
+     model, particularly over standing water and partially covered soil. Chukalla et al. (2022)
+     excluded the beneficial fraction from their WaPOR irrigation performance framework for this
+     reason. The ordering presented here should be treated as a prioritisation hypothesis to be
+     confirmed by field measurement, not as a settled result.<br><br>
+     <strong>Cost coefficients are literature-order estimates.</strong> Intervention costs, service
+     lives and evaporation-reduction fractions are not measurements. The ranking of locations is
+     driven by observed evaporation and is comparatively stable; the magnitude of the prize moves
+     with every coefficient and should be quoted as an order of magnitude.<br><br>
+     <strong>The comparator is a neutral prior.</strong> Area-proportional allocation represents what
+     one would do knowing only where the cropland lies. It is not a description of current ministry
+     practice, for which no citation is claimed.<br><br>
+     <strong>The decision unit is administrative.</strong> Governorates are not how this budget is
+     delivered; irrigation directorates and command areas are. The method is boundary-agnostic and
+     runs unchanged on any polygon set, including those used by IPAT.</p>
+
+  <h2>7. Monitoring</h2>
+  <p>Because the indicator that justifies the spending is also the indicator that measures it, the
+     following season's WaPOR imagery observes funded and unfunded governorates under the same
+     instrument and at the same cost. Funded and unfunded areas form a natural comparison, permitting
+     a difference-in-differences estimate of effect with a stated confidence interval, including the
+     case in which the effect is too small to detect.</p>
+
+  <footer>FAO WaPOR v3 Level 2 · 18 dekads · 1 May – 31 Oct 2024 · retrieved 19 August 2026 ·
+     method after Chukalla et al. (2022) · generated from the interactive tool, all coefficients
+     editable and listed in the accompanying documentation.</footer>`;
+
+  window.print();
+}
+
+/* ---------------- wiring ---------------- */
+document.getElementById('metricSeg').onclick=e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  metric=b.dataset.m;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b));
+  drawMap();
+};
+document.getElementById('viewSeg').onclick=e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  view=b.dataset.v;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b));
+  document.getElementById('rank').classList.toggle('hidden',view!=='list');
+  document.getElementById('tableView').classList.toggle('hidden',view!=='table');
+};
+const bslider=document.getElementById('budget');
+bslider.value=DATA.default_budget/1e6;
+bslider.oninput=()=>{
+  budget=parseFloat(bslider.value)*1e6;
+  document.getElementById('budgetLbl').textContent='$'+parseFloat(bslider.value).toFixed(1)+'M';
+  render();
+};
+const eq=document.getElementById('equity');
+eq.oninput=()=>{
+  equity=parseFloat(eq.value)/100;
+  document.getElementById('equityLbl').textContent = equity===0 ? 'no floor' : (equity*100).toFixed(0)+'% floor';
+  render();
+};
+document.getElementById('themeBtn').onclick=()=>{
+  const r=document.documentElement;
+  r.dataset.theme = r.dataset.theme==='dark'?'light':'dark';
+  render();
+};
+document.getElementById('briefBtn').onclick=brief;
+if(DATA.data_status!=='DEMO') document.getElementById('demoBanner').classList.add('hidden');
+document.getElementById('budgetLbl').textContent='$'+(DATA.default_budget/1e6).toFixed(1)+'M';
+
+drawAsm();
+render();
+</script>
+</body>
+</html>
