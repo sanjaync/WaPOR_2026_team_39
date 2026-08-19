@@ -46,6 +46,7 @@ agriculture takes 79% of what there is.
 | **Read the method and citations** | [`SUBMIT/04_documents/Technical_Documentation.pdf`](SUBMIT/04_documents/Technical_Documentation.pdf) |
 | **Watch the pitch video** | [`SUBMIT/01_pitch_video/`](SUBMIT/01_pitch_video/) |
 | **Run the analysis yourself** | [`SUBMIT/05_code/`](SUBMIT/05_code/) |
+| **Open the notebook** | [Notebook](https://notebook.google.com/notebook/2f0f3797-bd0b-40da-96e6-f4b6b7ae8c5f) |
 
 To get everything at once: green **Code** button above → **Download ZIP**.
 
