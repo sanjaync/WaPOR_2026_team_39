@@ -52,8 +52,8 @@ agriculture takes 79% of what there is.
 
 ## 🎙️ Quick Overview (Powered by Google Notebook Gemini)
 
-- **[🎵 Audio Overview](https://notebook.google.com/notebook/2f0f3797-bd0b-40da-96e6-f4b6b7ae8c5f/artifact/3da6a43b-e4fa-4d8e-b136-96e2a7655b4b?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)** — Listen to a comprehensive overview of the entire project
-- **[📹 Short Video Overview](https://notebook.google.com/notebook/2f0f3797-bd0b-40da-96e6-f4b6b7ae8c5f/artifact/ee19db80-562c-4abe-b5c1-f496b66684f7?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)** — Watch a short visual summary of the solution
+- **[🎵 Audio Overview](https://notebook.google.com/notebook/2f0f3797-bd0b-40da-96e6-f4b6b7ae8c5f/artifact/3da6a43b-e4fa-4d8e-b136-96e2a7655b4b?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=sheetsformobile)**
+- **[📹 Short Video Overview](https://notebook.google.com/notebook/2f0f3797-bd0b-40da-96e6-f4b6b7ae8c5f/artifact/ee19db80-562c-4abe-b5c1-f496b66684f7?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=sheetsformobile)**
 
 ---
 
@@ -63,13 +63,24 @@ agriculture takes 79% of what there is.
 |---|---|
 | **See the tool** | [`SUBMIT/03_tool/OPEN_ME_app.html`](SUBMIT/03_tool/OPEN_ME_app.html) — download and double click, no install |
 | **Read the idea in two pages** | [`SUBMIT/03_tool/Sample_2page_brief.pdf`](SUBMIT/03_tool/Sample_2page_brief.pdf) |
-| **See the pitch** | [`SUBMIT/04_documents/Pitch_Deck.pdf`](SUBMIT/04_documents/Pitch_Deck.pdf) |
+| **See the pitch** | [`SUBMIT/04_documents/Pitch_Deck.pptx`](SUBMIT/04_documents/Pitch_Deck.pptx) (PowerPoint) · [`SUBMIT/04_documents/Pitch_Deck.pdf`](SUBMIT/04_documents/Pitch_Deck.pdf) (PDF) |
 | **Read the method and citations** | [`SUBMIT/04_documents/Technical_Documentation.pdf`](SUBMIT/04_documents/Technical_Documentation.pdf) |
 | **Watch the pitch video** | [`SUBMIT/01_pitch_video/`](SUBMIT/01_pitch_video/) |
 | **Run the analysis yourself** | [`SUBMIT/05_code/`](SUBMIT/05_code/) |
 | **Open the notebook** | [Notebook](https://notebook.google.com/notebook/2f0f3797-bd0b-40da-96e6-f4b6b7ae8c5f) |
 
 To get everything at once: green **Code** button above → **Download ZIP**.
+
+---
+
+## 📄 Technical Documents
+
+All technical and presentation materials are available in [`SUBMIT/04_documents/`](SUBMIT/04_documents/):
+
+- **Pitch_Deck.pptx** — Main presentation deck (editable PowerPoint format)
+- **Pitch_Deck.pdf** — Presentation deck (PDF format for viewing)
+- **Technical_Documentation.pdf** — Full methodology, citations, assumptions, and limitations
+- **Sample_2page_brief.pdf** — Two-page concept brief
 
 ---
 
