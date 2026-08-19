@@ -282,4 +282,8 @@ This creates an **honest, cheap way** to prove exactly how much water was actual
 
 ---
 
-📞 **Questions?** Would you like to dive deeper into any step—like how WaPOR measures evaporation, or how the equity floor algorithm works in detail?
+## 📞 Questions? Contact Team 39
+
+Would you like to dive deeper into any step—like how WaPOR measures evaporation, or how the equity floor algorithm works in detail? Reach out to **Team 39** for more information!
+
+**GitHub:** [WaPOR_2026_team_39](https://github.com/sanjaync/WaPOR_2026_team_39)
