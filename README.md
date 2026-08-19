@@ -50,6 +50,13 @@ agriculture takes 79% of what there is.
 
 ---
 
+## 🎙️ Quick Overview (Powered by Google Notebook Gemini)
+
+- **[🎵 Audio Overview](https://notebook.google.com/notebook/2f0f3797-bd0b-40da-96e6-f4b6b7ae8c5f/artifact/3da6a43b-e4fa-4d8e-b136-96e2a7655b4b?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)** — Listen to a comprehensive overview of the entire project
+- **[📹 Short Video Overview](https://notebook.google.com/notebook/2f0f3797-bd0b-40da-96e6-f4b6b7ae8c5f/artifact/ee19db80-562c-4abe-b5c1-f496b66684f7?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)** — Watch a short visual summary of the solution
+
+---
+
 ## Start here
 
 | I want to… | Open |
