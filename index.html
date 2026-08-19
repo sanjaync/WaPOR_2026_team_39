@@ -95,6 +95,10 @@ svg.map{width:100%;height:auto;display:block;background:var(--surface-2);border-
 svg.map path{stroke:var(--surface-1);stroke-width:.9;cursor:pointer;transition:opacity .12s}
 svg.map path:hover{stroke:var(--text-primary);stroke-width:1.6}
 svg.map path.dim{opacity:.35}
+.explainer-card{margin:18px 0}
+.explainer{margin:14px 0 0;padding:0}
+.explainer img{width:100%;max-width:1180px;height:auto;display:block;margin:0 auto;
+  border-radius:12px;border:1px solid var(--border)}
 .prov{display:block;font-size:10.5px;color:var(--text-muted);margin:0 0 6px;letter-spacing:.01em}
 .map .leader{stroke:var(--text-muted);stroke-width:.6;opacity:.55}
 .map .leaderdot{fill:var(--text-muted);opacity:.75}
@@ -291,6 +295,22 @@ footer h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:v
     <div id="tableView" class="hidden"></div>
   </section>
 </div>
+
+
+<section class="card explainer-card">
+  <h2>The idea in one picture</h2>
+  <p class="note">The same twelve million dollars, spent in two different orders. On the left it is
+    spread in proportion to cultivated area. On the right it is ranked by how much evaporated water
+    each dollar recovers, and spent on laser land levelling in the Nile Valley. Nothing changes
+    except the order.</p>
+  <figure class="explainer">
+    <img src="logo_new.jpeg" alt="Two scenarios for the same twelve million dollar budget. Spread in
+      proportion to cultivated area it recovers 218.1 million cubic metres. Ranked by recoverable
+      evaporation and spent on laser land levelling in the Nile Valley it recovers 273.0 million
+      cubic metres, 25 per cent more water at a lower cost per cubic metre."
+      onerror="this.closest('.explainer-card').style.display='none'">
+  </figure>
+</section>
 
 <div class="grid">
   <section class="card">
