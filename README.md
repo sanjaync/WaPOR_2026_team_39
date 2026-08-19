@@ -5,6 +5,8 @@ without growing a crop.**
 
 WaPOR Hackathon 2026 · Team 39 · Sanjay N C
 
+![The tool](images/readme_app.png)
+
 ---
 
 ## What this is
@@ -25,30 +27,40 @@ distributing the same budget in proportion to irrigated area.
 
 Built on FAO WaPOR v3 Level 2, 100 m, 18 dekads covering 1 May to 31 October 2024.
 
+### Why Egypt
+
+No country with more than five million people has less freshwater of its own, and
+agriculture takes 79% of what there is.
+
+![Water scarcity, 2024](images/readme_scarcity.png)
+
 ---
 
 ## Start here
 
 | I want to… | Open |
 |---|---|
-| **See the tool** | `03_tool/OPEN_ME_app.html` — double click, no install |
-| **Read the idea in two pages** | `03_tool/Sample_2page_brief.pdf` |
-| **See the pitch** | `04_documents/Pitch_Deck.pdf` |
-| **Read the method and citations** | `04_documents/Technical_Documentation.pdf` |
-| **Make the video** | `01_pitch_video/HOW_TO_MAKE_THE_VIDEO.md` |
-| **Run the analysis yourself** | `05_code/README.md` |
+| **See the tool** | [`SUBMIT/03_tool/OPEN_ME_app.html`](SUBMIT/03_tool/OPEN_ME_app.html) — download and double click, no install |
+| **Read the idea in two pages** | [`SUBMIT/03_tool/Sample_2page_brief.pdf`](SUBMIT/03_tool/Sample_2page_brief.pdf) |
+| **See the pitch** | [`SUBMIT/04_documents/Pitch_Deck.pdf`](SUBMIT/04_documents/Pitch_Deck.pdf) |
+| **Read the method and citations** | [`SUBMIT/04_documents/Technical_Documentation.pdf`](SUBMIT/04_documents/Technical_Documentation.pdf) |
+| **Watch the pitch video** | [`SUBMIT/01_pitch_video/`](SUBMIT/01_pitch_video/) |
+| **Run the analysis yourself** | [`SUBMIT/05_code/`](SUBMIT/05_code/) |
+
+To get everything at once: green **Code** button above → **Download ZIP**.
 
 ---
 
 ## Folder guide
 
 ```
-01_pitch_video/     the 60 second pitch: silent visual track, one script that
+SUBMIT/
+  01_pitch_video/   the 60 second pitch: silent visual track, the script that
                     adds the narration, teleprompter, shot list
-02_miro/            text ready to drop onto the team Miro board
-03_tool/            the working tool, single HTML file, works offline
-04_documents/       deck, concept note, technical documentation, workbook
-05_code/            the full pipeline, Python and Earth Engine
+  02_miro/          text ready to drop onto the team Miro board
+  03_tool/          the working tool, a single HTML file that works offline
+  04_documents/     deck, concept note, technical documentation, workbook
+  05_code/          the full pipeline, Python and Earth Engine
 ```
 
 ---
@@ -69,7 +81,7 @@ cropland evaporation removed them, and most of Aswan's lead went with it. The
 national figure fell from 32% to 25%.
 
 Both corrections, and the full list of limitations, are in
-`04_documents/Technical_Documentation.pdf`.
+[`SUBMIT/04_documents/Technical_Documentation.pdf`](SUBMIT/04_documents/Technical_Documentation.pdf).
 
 ---
 
@@ -90,5 +102,7 @@ validation rather than a settled allocation.
 ## Data and licence
 
 WaPOR v3 is published by FAO under open access. Administrative boundaries are FAO
-GAUL 2015. Surface water masking uses JRC Global Surface Water. Full citations are
-in `04_documents/Technical_Documentation.pdf` and `05_code/docs/tex/refs.bib`.
+GAUL 2015. Surface water masking uses JRC Global Surface Water. Water scarcity
+figures are World Bank Open Data and FAO AQUASTAT. Full citations are in
+[`SUBMIT/04_documents/Technical_Documentation.pdf`](SUBMIT/04_documents/Technical_Documentation.pdf)
+and `SUBMIT/05_code/docs/tex/refs.bib`.
