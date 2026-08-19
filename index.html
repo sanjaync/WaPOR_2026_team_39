@@ -49,8 +49,10 @@ body{
 /* ---------- header ---------- */
 header{padding:26px 0 20px;display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap}
 header .id{flex:1 1 420px;min-width:280px}
-.hzlogo{height:76px;width:auto;display:block;margin:0 0 14px}
-@media(max-width:700px){.hzlogo{height:56px}}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:26px;padding-top:22px;flex:0 1 auto}
+.hzlogo{width:clamp(230px,30vw,400px);height:auto;display:block}
+@media(max-width:820px){.hdr-right{align-items:flex-start;gap:16px;padding-top:6px}
+  .hzlogo{width:190px}}
 .tagline{font-size:15px;color:var(--text-secondary);margin:4px 0 10px;max-width:70ch}
 .eyebrow{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted)}
 h1{margin:6px 0 4px;font-size:29px;line-height:1.15;letter-spacing:-.02em;font-weight:700}
@@ -212,10 +214,6 @@ footer h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:v
 <div class="wrap">
 <header>
   <div class="id">
-    <img class="hzlogo" alt="WaPOR Hackathon 2026, from tools to decisions"
-      src="Logo%20WaPOR%20Hacktahon%202026%20(1).png"
-      onerror="this.style.display='none'"
-      onload="var e=document.querySelector('.eyebrow'); if(e) e.style.display='none'">
     <div class="eyebrow">WaPOR Hackathon 2026 · From tools to decisions</div>
     <h1>Same Budget, More Water</h1>
     <p class="tagline">Ranking Egypt's irrigation budget by <strong>the water that evaporated without growing a crop</strong>.</p>
@@ -228,9 +226,15 @@ footer h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:v
     We turn that split into a ranked spending list: which areas get the on-farm modernisation budget,
     in what order, and how much water each dollar buys back.</p>
   </div>
-  <div class="hdr-actions">
-    <button class="btn" id="themeBtn">◐ Theme</button>
-    <button class="btn primary" id="briefBtn">⤓ Download 2-page brief</button>
+  <div class="hdr-right">
+    <div class="hdr-actions">
+      <button class="btn" id="themeBtn">◐ Theme</button>
+      <button class="btn primary" id="briefBtn">⤓ Download 2-page brief</button>
+    </div>
+    <img class="hzlogo" alt="WaPOR Hackathon 2026, from tools to decisions"
+      src="Logo%20WaPOR%20Hacktahon%202026%20(1).png"
+      onerror="this.style.display='none'"
+      onload="var e=document.querySelector('.eyebrow'); if(e) e.style.display='none'">
   </div>
 </header>
 
