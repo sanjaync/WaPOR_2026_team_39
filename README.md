@@ -68,21 +68,27 @@ Built on **FAO WaPOR v3 Level 2** | 100 m resolution | 18 dekads (May–October 
 
 ### 🎯 For Decision Makers
 
-- **Pitch_Deck.pptx / PDF** — Stakeholder presentation (10 slides)
-- **Sample_2page_brief.pdf** — Executive summary in 2 pages
+- **🎤 [`Pitch_Deck.pptx`](SUBMIT/04_documents/Pitch_Deck.pptx)** — Stakeholder presentation (10 slides, editable PowerPoint)
+- **🎤 [`Pitch_Deck.pdf`](SUBMIT/04_documents/Pitch_Deck.pdf)** — Stakeholder presentation (10 slides, PDF format)
+- **📄 [`Sample_2page_brief.pdf`](SUBMIT/03_tool/Sample_2page_brief.pdf)** — Executive summary in 2 pages
 
 ### 🔬 For Technicians & Researchers
 
-- **Technical_Documentation.pdf** — Full methodology, data sources, assumptions, limitations, and citations
-- **Complete codebase** — [`SUBMIT/05_code/`](SUBMIT/05_code/) — Python pipeline + Google Earth Engine scripts
+- **📖 [`Technical_Documentation.pdf`](SUBMIT/04_documents/Technical_Documentation.pdf)** — Full methodology, data sources, assumptions, limitations, and citations
+- **💻 [`Complete codebase`](SUBMIT/05_code/)** — Python pipeline + Google Earth Engine scripts + documentation
 
-### 📖 For Storytelling
+### 📖 For Storytelling & Context
 
-- **The Big Picture** — Egypt's water crisis and how this solution helps
-- **The Methodology** — How WaPOR satellites, math, and the greedy algorithm work together
-- **From Tools to Decisions** — Why this decision-based approach transforms water budgeting
+- **🌍 [`The Big Picture`](THE_BIG_PICTURE.md)** — Egypt's water crisis and how this solution helps
+- **🧮 [`The Methodology`](METHODOLOGY.md)** — How WaPOR satellites, math, and the greedy algorithm work together
+- **🎯 [`From Tools to Decisions`](FROM_TOOLS_TO_DECISIONS.md)** — Why this decision-based approach transforms water budgeting
 
-**📂 All materials:** [`SUBMIT/04_documents/`](SUBMIT/04_documents/)
+### 📂 All Materials
+Find everything in **[`SUBMIT/04_documents/`](SUBMIT/04_documents/)**:
+- Pitch decks (PPTX + PDF)
+- Technical documentation
+- Workbooks & reference materials
+- Sample briefs
 
 ---
 
@@ -331,15 +337,14 @@ The red demo banner disappears automatically when real WaPOR data loads.
 ## 🎓 Learn More
 
 ### 📺 Video Content
-- **60-second pitch** (silent visual + narration script)
-- **Google Notebook** (interactive analysis walkthrough)
-- **YouTube** (when published)
+- **🎬 [`60-second pitch`](SUBMIT/01_pitch_video/)** (silent visual + narration script)
+- **📓 [`Google Notebook`](https://notebook.google.com/notebook/2f0f3797-bd0b-40da-96e6-f4b6b7ae8c5f)** (interactive analysis walkthrough)
 
 ### 📖 Written Deep Dives
-- **Technical_Documentation.pdf** — Full methodology & limitations
-- **THE_BIG_PICTURE.md** — Water crisis context
-- **METHODOLOGY.md** — Algorithm & math
-- **FROM_TOOLS_TO_DECISIONS.md** — Decision framework
+- **🌍 [`Technical_Documentation.pdf`](SUBMIT/04_documents/Technical_Documentation.pdf)** — Full methodology & limitations
+- **🌍 [`THE_BIG_PICTURE.md`](THE_BIG_PICTURE.md)** — Water crisis context
+- **🧮 [`METHODOLOGY.md`](METHODOLOGY.md)** — Algorithm & math
+- **🎯 [`FROM_TOOLS_TO_DECISIONS.md`](FROM_TOOLS_TO_DECISIONS.md)** — Decision framework
 
 ---
 
