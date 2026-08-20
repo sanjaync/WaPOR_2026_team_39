@@ -1,5 +1,7 @@
 # 💧 Same Budget, More Water
 
+[Live demo ↗](https://sanjaync.github.io/WaPOR_2026_team_39/) — Open the web tool (for people who miss the site).
+
 > **Ranking Egypt's irrigation budget by the water that evaporated without growing a crop.**
 
 🏆 *WaPOR Hackathon 2026 · Team 39*
@@ -16,7 +18,7 @@
 
 ## 🎯 What This Is
 
-Egypt's Ministry of Water Resources and Irrigation manages a constrained annual budget for modernising farms. The existing IPAT irrigation assessment tool identifies **where** water productivity is high and low across 1.5 million ha of the Middle and West Delta. It stops there. A ministry with a fixed budget still has to decide **where to spend**.
+Egypt's Ministry of Water Resources and Irrigation manages a constrained annual budget for modernising farms. The existing IPAT irrigation assessment tool identifies **where** water productivity i[...]
 
 ### 💡 The Breakthrough
 
@@ -133,7 +135,7 @@ The web-based tool features a **dynamic decision page** where all values update 
 ### 🔬 For Technicians & Researchers
 
 - **📖 [`Technical_Documentation.pdf`](SUBMIT/04_documents/Technical_Documentation.pdf)** — Full methodology, data sources, assumptions, limitations, and citations
-- **💻 [`Complete codebase`](SUBMIT/05_code/)** — Python pipeline + Google Earth Engine scripts + documentation
+- **💻 [`Complete codebase`](SUBMIT/05_code/`](SUBMIT/05_code/) — Python pipeline + Google Earth Engine scripts + documentation
 
 ### 📖 For Storytelling & Context
 
@@ -212,7 +214,7 @@ Aswan initially ranked **#1 nationally** in recoverable evaporation.
     │   ├── 03_zonal_stats.py (rasters → stats)
     │   ├── 04_rank_and_allocate.py (🎯 THE DECISION ENGINE)
     │   ├── 05_build_webmap.py (HTML generation with PDF support)
-    │   └── gee/wapor_export.js (Earth Engine alternative)
+    │   │   └── gee/wapor_export.js (Earth Engine alternative)
     │
     ├── webmap/
     │   ├── template.html (full app: CSS + JS inline, offline-ready)
@@ -254,7 +256,7 @@ Aswan initially ranked **#1 nationally** in recoverable evaporation.
 | Straw / plastic mulching | $260 | 1 yr | 30% | Non-rice (never selected) |
 | Drip retrofit | $1,800 | 10 yr | 45% | Non-rice (never selected) |
 
-🎮 **All parameters are editable live in the web map** — Change a number, watch rankings recalculate instantly. This is honest: these are literature-order estimates, not measurements. Better to expose uncertainty than hide it.
+🎮 **All parameters are editable live in the web map** — Change a number, watch rankings recalculate instantly. This is honest: these are literature-order estimates, not measurements. Better [...]
 
 ### 🗺️ Cropland Identification
 
@@ -362,7 +364,7 @@ The tool recalculates everything automatically, and can generate custom PDF repo
 
 ### 📚 References & Citations
 All sources fully cited in:
-- [`SUBMIT/04_documents/Technical_Documentation.pdf`](SUBMIT/04_documents/Technical_Documentation.pdf)
+- [`SUBMIT/04_documents/Technical_DocumentATION.pdf`](SUBMIT/04_documents/Technical_DocumentATION.pdf)
 - `SUBMIT/05_code/docs/tex/refs.bib`
 
 ---
@@ -403,7 +405,7 @@ The red demo banner disappears automatically when real WaPOR data loads.
 - **📓 [`Google Notebook`](https://notebook.google.com/notebook/2f0f3797-bd0b-40da-96e6-f4b6b7ae8c5f)** (interactive analysis walkthrough)
 
 ### 📖 Written Deep Dives
-- **🌍 [`Technical_Documentation.pdf`](SUBMIT/04_documents/Technical_Documentation.pdf)** — Full methodology & limitations
+- **🌍 [`Technical_Documentation.pdf`](SUBMIT/04_documents/Technical_DocumentATION.pdf)** — Full methodology & limitations
 - **🌍 [`THE_BIG_PICTURE.md`](THE_BIG_PICTURE.md)** — Water crisis context
 - **🧮 [`METHODOLOGY.md`](METHODOLOGY.md)** — Algorithm & math
 - **🎯 [`FROM_TOOLS_TO_DECISIONS.md`](FROM_TOOLS_TO_DECISIONS.md)** — Decision framework
