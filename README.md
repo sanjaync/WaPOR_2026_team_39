@@ -1,6 +1,6 @@
 # 💧 Same Budget, More Water
 
-> **Ranking Egypt's on-farm modernisation budget by the water that evaporated without growing a crop.**
+> **Ranking Egypt's irrigation budget by the water that evaporated without growing a crop.**
 
 🏆 *WaPOR Hackathon 2026 · Team 39*
 
@@ -16,7 +16,7 @@
 
 ## 🎯 What This Is
 
-Egypt's Ministry of Water Resources and Irrigation manages a constrained annual budget for modernising farms. The existing IPAT irrigation assessment tool identifies **where** water productivity is low—but not **where to spend**.
+Egypt's Ministry of Water Resources and Irrigation manages a constrained annual budget for modernising farms. The existing IPAT irrigation assessment tool identifies **where** water productivity is high and low across 1.5 million ha of the Middle and West Delta. It stops there. A ministry with a fixed budget still has to decide **where to spend**.
 
 ### 💡 The Breakthrough
 
@@ -64,6 +64,63 @@ Built on **FAO WaPOR v3 Level 2** | 100 m resolution | 18 dekads (May–October 
 
 ---
 
+## 🎮 Interactive Decision Page
+
+The web-based tool features a **dynamic decision page** where all values update in real-time:
+
+### 🎯 What You Can Do
+
+1. **Adjust Budget & Parameters**
+   - Change the annual budget allocation
+   - Edit intervention costs (USD/ha)
+   - Modify reduction fractions (% evaporation saved)
+   - Adjust equipment lifespan
+   - Set equity floor constraints
+
+2. **Watch Slides Update Instantly**
+   - Rankings recalculate as you change inputs
+   - Allocation breakdown updates in real-time
+   - Top-ranked governorates highlight dynamically
+   - Cost-effectiveness metrics refresh
+
+3. **Generate PDF Report Card**
+   - **2-page downloadable brief** tailored to your parameters
+   - Executive summary with decision metrics
+   - Visual ranking table and allocation breakdown
+   - Water recovery impact vs. baseline scenario
+   - All assumptions clearly listed
+
+### 📊 What the Report Includes
+
+**Page 1 — Decision Summary:**
+- Budget allocation ($M)
+- Total water recovered (mm equivalent)
+- % improvement vs. area-proportional split
+- Top 5 governorates by cost-effectiveness
+- Recommended priority order
+
+**Page 2 — Technical Breakdown:**
+- Full ranking table (all 20 governorates)
+- Intervention costs & reduction assumptions used
+- Equity floor impact analysis
+- Methodology & data source notes
+
+### 🔄 Real-Time Decision Making
+
+**The key feature:** As stakeholders review the analysis, they can:
+- Modify budget constraints on-the-fly
+- Test "what-if" scenarios
+- Generate updated reports instantly
+- Export their custom scenario as a PDF
+
+**All parameters in the web tool are fully editable because:**
+- Intervention costs are literature estimates, not field measurements
+- This is honest: uncertainties are transparent
+- Decision-makers can validate against their own cost databases
+- Rankings remain robust across reasonable cost ranges
+
+---
+
 ## 📚 Complete Documentation
 
 ### 🎯 For Decision Makers
@@ -71,6 +128,7 @@ Built on **FAO WaPOR v3 Level 2** | 100 m resolution | 18 dekads (May–October 
 - **🎤 [`Pitch_Deck.pptx`](SUBMIT/04_documents/Pitch_Deck.pptx)** — Stakeholder presentation (10 slides, editable PowerPoint)
 - **🎤 [`Pitch_Deck.pdf`](SUBMIT/04_documents/Pitch_Deck.pdf)** — Stakeholder presentation (10 slides, PDF format)
 - **📄 [`Sample_2page_brief.pdf`](SUBMIT/03_tool/Sample_2page_brief.pdf)** — Executive summary in 2 pages
+- **🔄 [`Decision Page`](#interactive-decision-page)** — Dynamic tool with live PDF generation
 
 ### 🔬 For Technicians & Researchers
 
@@ -84,11 +142,12 @@ Built on **FAO WaPOR v3 Level 2** | 100 m resolution | 18 dekads (May–October 
 - **🎯 [`From Tools to Decisions`](FROM_TOOLS_TO_DECISIONS.md)** — Why this decision-based approach transforms water budgeting
 
 ### 📂 All Materials
+
 Find everything in **[`SUBMIT/04_documents/`](SUBMIT/04_documents/)**:
 - Pitch decks (PPTX + PDF)
 - Technical documentation
 - Workbooks & reference materials
-- Sample briefs
+- Sample briefs + generated PDF reports
 
 ---
 
@@ -135,8 +194,9 @@ Aswan initially ranked **#1 nationally** in recoverable evaporation.
 │   └── Miro board content & visual narrative
 │
 ├── 🔧 SUBMIT/03_tool/
-│   ├── OPEN_ME_app.html (⭐ Interactive tool, no install)
-│   └── Sample_2page_brief.pdf
+│   ├── OPEN_ME_app.html (⭐ Interactive tool with decision page)
+│   ├── Sample_2page_brief.pdf (example generated report)
+│   └── README_TOOL.md (tool usage guide)
 │
 ├── 📚 SUBMIT/04_documents/
 │   ├── Pitch_Deck.pptx (editable)
@@ -151,12 +211,13 @@ Aswan initially ranked **#1 nationally** in recoverable evaporation.
     │   ├── 02_fetch_wapor.py (WaPOR download)
     │   ├── 03_zonal_stats.py (rasters → stats)
     │   ├── 04_rank_and_allocate.py (🎯 THE DECISION ENGINE)
-    │   ├── 05_build_webmap.py (HTML generation)
+    │   ├── 05_build_webmap.py (HTML generation with PDF support)
     │   └── gee/wapor_export.js (Earth Engine alternative)
     │
     ├── webmap/
     │   ├── template.html (full app: CSS + JS inline, offline-ready)
-    │   └── index.html (built output ⭐)
+    │   ├── index.html (built output ⭐)
+    │   └── pdf_generation.js (dynamic PDF report builder)
     │
     └── docs/
         ├── DATA_SOURCES.md
@@ -193,7 +254,7 @@ Aswan initially ranked **#1 nationally** in recoverable evaporation.
 | Straw / plastic mulching | $260 | 1 yr | 30% | Non-rice (never selected) |
 | Drip retrofit | $1,800 | 10 yr | 45% | Non-rice (never selected) |
 
-🎮 **All parameters are editable live in the web map** — Change a number, watch rankings recalculate instantly. This is honest: these are literature-order estimates, not measurements. Better to expose assumptions than bury them.
+🎮 **All parameters are editable live in the web map** — Change a number, watch rankings recalculate instantly. This is honest: these are literature-order estimates, not measurements. Better to expose uncertainty than hide it.
 
 ### 🗺️ Cropland Identification
 
@@ -243,6 +304,7 @@ Reserving 25% of budget as an equity floor (minimum funding to all 20 governorat
 | **Cost-effectiveness ranking** | Prioritisation order based on literature cost & performance |
 | **Spatial advantage** | ~23 of 25 percentage points require satellite detail |
 | **Editable assumptions** | All cost & reduction parameters are tunable in the tool |
+| **Dynamic reporting** | PDF reports generated on-demand with current parameters |
 
 ### ❌ What This Does NOT Claim
 
@@ -282,7 +344,7 @@ Run with custom budget:
 ./run_all.sh 25000000    # for $25M budget
 ```
 
-The tool recalculates everything automatically.
+The tool recalculates everything automatically, and can generate custom PDF reports.
 
 ---
 
@@ -351,7 +413,8 @@ The red demo banner disappears automatically when real WaPOR data loads.
 ## 🎖️ Project Status
 
 ✅ **Hackathon Phase:** Complete
-- Tool built & tested
+- Tool built & tested with dynamic decision page
+- PDF report generation integrated
 - Analysis complete
 - Documentation finalized
 - Code open-sourced
